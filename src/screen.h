@@ -119,7 +119,7 @@ int vt100_screen_loc_is_selected(VT100Screen *vt, struct vt100_loc loc);
 void vt100_screen_get_string(
     VT100Screen *vt, struct vt100_loc *start, struct vt100_loc *end,
     char **strp, size_t *lenp);
-struct vt100_cell *vt100_screen_get_cell(VT100Screen *vt, int row, int col);
+struct vt100_cell *vt100_screen_cell_at(VT100Screen *vt, int row, int col);
 void vt100_screen_audible_bell(VT100Screen *vt);
 void vt100_screen_visual_bell(VT100Screen *vt);
 void vt100_screen_show_string_ascii(VT100Screen *vt, char *buf, size_t len);

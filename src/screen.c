@@ -8,7 +8,6 @@
 
 static void vt100_screen_ensure_capacity(VT100Screen *vt, int size);
 static struct vt100_row *vt100_screen_row_at(VT100Screen *vt, int row);
-static struct vt100_cell *vt100_screen_cell_at(VT100Screen *vt, int row, int col);
 static void vt100_screen_scroll_down(VT100Screen *vt, int count);
 static void vt100_screen_scroll_up(VT100Screen *vt, int count);
 static int vt100_screen_scroll_region_is_active(VT100Screen *vt);
@@ -213,7 +212,7 @@ void vt100_screen_get_string(
     }
 }
 
-struct vt100_cell *vt100_screen_get_cell(VT100Screen *vt, int row, int col)
+struct vt100_cell *vt100_screen_cell_at(VT100Screen *vt, int row, int col)
 {
     return &vt->grid->rows[row + vt->grid->row_top].cells[col];
 }
@@ -820,11 +819,6 @@ static void vt100_screen_ensure_capacity(VT100Screen *vt, int size)
 static struct vt100_row *vt100_screen_row_at(VT100Screen *vt, int row)
 {
     return &vt->grid->rows[row + vt->grid->row_top];
-}
-
-static struct vt100_cell *vt100_screen_cell_at(VT100Screen *vt, int row, int col)
-{
-    return &vt->grid->rows[row + vt->grid->row_top].cells[col];
 }
 
 static void vt100_screen_scroll_down(VT100Screen *vt, int count)
