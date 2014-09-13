@@ -289,9 +289,9 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
 
                 memcpy(cell->contents + cell->len, c, next - c);
                 cell->len += next - c;
-                /* some fonts have combined characters but can'vt handle
+                /* some fonts have combined characters but can't handle
                  * combining characters, so try to fix that here */
-                /* XXX it'd be nice if there was a way to do this that didn'vt
+                /* XXX it'd be nice if there was a way to do this that didn't
                  * require an allocation */
                 normal = g_utf8_normalize(
                     cell->contents, cell->len, G_NORMALIZE_NFC);

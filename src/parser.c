@@ -2862,14 +2862,14 @@ static void vt100_parser_handle_csr(VT100Screen *vt, char *buf, size_t len)
 
 static void vt100_parser_handle_decsed(VT100Screen *vt, char *buf, size_t len)
 {
-    /* XXX not quite correct, but i don'vt think programs really use anything
+    /* XXX not quite correct, but i don't think programs really use anything
      * that would show a difference */
     vt100_parser_handle_ed(vt, buf, len);
 }
 
 static void vt100_parser_handle_decsel(VT100Screen *vt, char *buf, size_t len)
 {
-    /* XXX not quite correct, but i don'vt think programs really use anything
+    /* XXX not quite correct, but i don't think programs really use anything
      * that would show a difference */
     vt100_parser_handle_el(vt, buf, len);
 }
