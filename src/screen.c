@@ -213,6 +213,11 @@ void vt100_screen_get_string(
     }
 }
 
+struct vt100_cell *vt100_screen_get_cell(VT100Screen *vt, int row, int col)
+{
+    return &vt->grid->rows[row + vt->grid->row_top].cells[col];
+}
+
 void vt100_screen_audible_bell(VT100Screen *vt)
 {
     vt->audible_bell = 1;
