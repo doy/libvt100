@@ -17,6 +17,16 @@ static int vt100_screen_loc_is_between(
     struct vt100_loc start, struct vt100_loc end);
 static int vt100_screen_row_max_col(VT100Screen *vt, int row);
 
+VT100Screen *vt100_screen_new()
+{
+    VT100Screen *vt;
+
+    vt = calloc(1, sizeof(VT100Screen));
+    vt100_screen_init(vt);
+
+    return vt;
+}
+
 void vt100_screen_init(VT100Screen *vt)
 {
     vt->grid = calloc(1, sizeof(struct vt100_grid));
@@ -771,6 +781,12 @@ void vt100_screen_cleanup(VT100Screen *vt)
     free(vt->icon_name);
 
     vt100_parser_yylex_destroy(vt->scanner);
+}
+
+void vt100_screen_delete(VT100Screen *vt)
+{
+    vt100_screen_cleanup(vt);
+    free(vt);
 }
 
 static void vt100_screen_ensure_capacity(VT100Screen *vt, int size)

@@ -111,6 +111,7 @@ struct vt100_screen {
     unsigned char dirty: 1;
 };
 
+VT100Screen *vt100_screen_new();
 void vt100_screen_init(VT100Screen *vt);
 void vt100_screen_set_window_size(VT100Screen *vt);
 int vt100_screen_process_string(VT100Screen *vt, char *buf, size_t len);
@@ -171,5 +172,6 @@ void vt100_screen_reset_bracketed_paste(VT100Screen *vt);
 void vt100_screen_set_window_title(VT100Screen *vt, char *buf, size_t len);
 void vt100_screen_set_icon_name(VT100Screen *vt, char *buf, size_t len);
 void vt100_screen_cleanup(VT100Screen *vt);
+void vt100_screen_delete(VT100Screen *vt);
 
 #endif
