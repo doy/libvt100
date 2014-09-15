@@ -111,9 +111,9 @@ struct vt100_screen {
     unsigned char dirty: 1;
 };
 
-VT100Screen *vt100_screen_new();
+VT100Screen *vt100_screen_new(int rows, int cols);
 void vt100_screen_init(VT100Screen *vt);
-void vt100_screen_set_window_size(VT100Screen *vt);
+void vt100_screen_set_window_size(VT100Screen *vt, int rows, int cols);
 int vt100_screen_process_string(VT100Screen *vt, char *buf, size_t len);
 int vt100_screen_loc_is_selected(VT100Screen *vt, struct vt100_loc loc);
 void vt100_screen_get_string(

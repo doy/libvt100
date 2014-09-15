@@ -16,12 +16,13 @@ static int vt100_screen_loc_is_between(
     struct vt100_loc start, struct vt100_loc end);
 static int vt100_screen_row_max_col(VT100Screen *vt, int row);
 
-VT100Screen *vt100_screen_new()
+VT100Screen *vt100_screen_new(int rows, int cols)
 {
     VT100Screen *vt;
 
     vt = calloc(1, sizeof(VT100Screen));
     vt100_screen_init(vt);
+    vt100_screen_set_window_size(vt, rows, cols);
 
     return vt;
 }
@@ -32,7 +33,7 @@ void vt100_screen_init(VT100Screen *vt)
     vt100_parser_yylex_init_extra(vt, &vt->scanner);
 }
 
-void vt100_screen_set_window_size(VT100Screen *vt)
+void vt100_screen_set_window_size(VT100Screen *vt, int rows, int cols)
 {
     struct vt100_loc old_size;
     int i;
@@ -40,11 +41,8 @@ void vt100_screen_set_window_size(VT100Screen *vt)
     old_size.row = vt->grid->max.row;
     old_size.col = vt->grid->max.col;
 
-    /* vt->grid->max.row = vt->display.ypixel / vt->display.fonty; */
-    /* vt->grid->max.col = vt->display.xpixel / vt->display.fontx; */
-    // XXX vt100
-    vt->grid->max.row = 24;
-    vt->grid->max.col = 80;
+    vt->grid->max.row = rows;
+    vt->grid->max.col = cols;
 
     if (vt->grid->max.row == 0) {
         vt->grid->max.row = 1;
@@ -656,7 +654,9 @@ void vt100_screen_use_alternate_buffer(VT100Screen *vt)
 
     vt->alternate = vt->grid;
     vt->grid = calloc(1, sizeof(struct vt100_grid));
-    vt100_screen_set_window_size(vt);
+    vt100_screen_set_window_size(
+        vt, vt->alternate->max.row, vt->alternate->max.col
+    );
 
     vt->dirty = 1;
 }
@@ -678,7 +678,7 @@ void vt100_screen_use_normal_buffer(VT100Screen *vt)
     vt->grid = vt->alternate;
     vt->alternate = NULL;
 
-    vt100_screen_set_window_size(vt);
+    vt100_screen_set_window_size(vt, vt->grid->max.row, vt->grid->max.col);
 
     vt->dirty = 1;
 }
