@@ -43,6 +43,8 @@ void vt100_screen_set_window_size(VT100Screen *vt, int rows, int cols)
 
     vt->grid->max.row = rows;
     vt->grid->max.col = cols;
+    if (!vt->custom_scrollback_length)
+        vt->scrollback_length = rows;
 
     if (vt->grid->max.row == 0) {
         vt->grid->max.row = 1;
@@ -90,6 +92,12 @@ void vt100_screen_set_window_size(VT100Screen *vt, int rows, int cols)
 
     vt->grid->scroll_top    = 0;
     vt->grid->scroll_bottom = vt->grid->max.row - 1;
+}
+
+void vt100_screen_set_scrollback_length(VT100Screen *vt, int rows)
+{
+    vt->scrollback_length = rows;
+    vt->custom_scrollback_length = 1;
 }
 
 int vt100_screen_process_string(VT100Screen *vt, char *buf, size_t len)
@@ -856,8 +864,7 @@ static void vt100_screen_scroll_down(VT100Screen *vt, int count)
         }
     }
     else {
-        /* int scrollback = vt->config.scrollback_length; */
-        int scrollback = 4096; // XXX vt100
+        int scrollback = vt->scrollback_length;
 
         if (vt->grid->row_count + count > scrollback) {
             int overflow = vt->grid->row_count + count - scrollback;
