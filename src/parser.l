@@ -174,7 +174,7 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 {LEAD4}{CONT}?{CONT}?        |
 {CSI}[<=?]?{CSIPARAMS}[0-9;] |
 {CSI}                        |
-{OSC}                        |
+{OSC}{CHAR}*                 |
 {ESC}                        return yyleng;
 
 <<EOF>> return 0;
@@ -191,16 +191,10 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
         (int)yyleng - 1, yytext + 1);
 }
 
-{OSC}{CTRL} {
+{OSC}{CHAR}*{ST} {
     fprintf(stderr,
-        "unhandled OSC sequence: \\033%*s\\%hho\n",
-        (int)yyleng - 2, yytext + 1, yytext[yyleng - 1]);
-}
-
-{OSC}{CHAR} {
-    fprintf(stderr,
-        "unhandled OSC sequence: \\033%*s\n",
-        (int)yyleng - 1, yytext + 1);
+        "unhandled OSC sequence: \\033%*s\\007\n",
+        (int)yyleng - 2, yytext + 1);
 }
 
 {ESC}{CTRL} {
