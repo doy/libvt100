@@ -181,20 +181,19 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 
 {CSI}[<=?]?{CSIPARAMS}{CTRL} {
     fprintf(stderr,
-        "unhandled CSI sequence: \\033%*s\\%hho\n",
-        (int)yyleng - 2, yytext + 1, yytext[yyleng - 1]);
+        "unhandled CSI sequence: \\033%s\\%hho\n",
+        yytext + 1, yytext[yyleng - 1]);
 }
 
 {CSI}[<=?]?{CSIPARAMS}{CHAR} {
-    fprintf(stderr,
-        "unhandled CSI sequence: \\033%*s\n",
-        (int)yyleng - 1, yytext + 1);
+    fprintf(stderr, "unhandled CSI sequence: \\033%s\n", yytext + 1);
 }
 
 {OSC}{CHAR}*{ST} {
+    yytext[yyleng - 1] = '\0';
     fprintf(stderr,
-        "unhandled OSC sequence: \\033%*s\\007\n",
-        (int)yyleng - 2, yytext + 1);
+        "unhandled OSC sequence: \\033%s\\007\n",
+        yytext + 1);
 }
 
 {ESC}{CTRL} {
@@ -202,9 +201,7 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 }
 
 {ESC}{CHAR} {
-    fprintf(stderr,
-        "unhandled escape sequence: %*s\n",
-        (int)yyleng - 1, yytext + 1);
+    fprintf(stderr, "unhandled escape sequence: %s\n", yytext + 1);
 }
 
 {CTRL} {

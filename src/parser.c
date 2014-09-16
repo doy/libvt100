@@ -1192,66 +1192,63 @@ YY_RULE_SETUP
 #line 182 "src/parser.l"
 {
     fprintf(stderr,
-        "unhandled CSI sequence: \\033%*s\\%hho\n",
-        (int)yyleng - 2, yytext + 1, yytext[yyleng - 1]);
+        "unhandled CSI sequence: \\033%s\\%hho\n",
+        yytext + 1, yytext[yyleng - 1]);
 }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 188 "src/parser.l"
 {
-    fprintf(stderr,
-        "unhandled CSI sequence: \\033%*s\n",
-        (int)yyleng - 1, yytext + 1);
+    fprintf(stderr, "unhandled CSI sequence: \\033%s\n", yytext + 1);
 }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 194 "src/parser.l"
+#line 192 "src/parser.l"
 {
+    yytext[yyleng - 1] = '\0';
     fprintf(stderr,
-        "%d unhandled OSC sequence: \\033%*s\\007\n",
-        (int)yyleng, (int)yyleng - 5, yytext + 1);
+        "unhandled OSC sequence: \\033%s\\007\n",
+        yytext + 1);
 }
 	YY_BREAK
 case 52:
 /* rule 52 can match eol */
 YY_RULE_SETUP
-#line 200 "src/parser.l"
+#line 199 "src/parser.l"
 {
     fprintf(stderr, "unhandled escape sequence: \\%hho\n", yytext[1]);
 }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 204 "src/parser.l"
+#line 203 "src/parser.l"
 {
-    fprintf(stderr,
-        "unhandled escape sequence: %*s\n",
-        (int)yyleng - 1, yytext + 1);
+    fprintf(stderr, "unhandled escape sequence: %s\n", yytext + 1);
 }
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 210 "src/parser.l"
+#line 207 "src/parser.l"
 {
     fprintf(stderr, "unhandled control character: \\%hho\n", yytext[0]);
 }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 214 "src/parser.l"
+#line 211 "src/parser.l"
 {
     fprintf(stderr, "invalid utf8 byte: \\%hho\n", yytext[0]);
 }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 218 "src/parser.l"
+#line 215 "src/parser.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1255 "src/parser.c"
+#line 1252 "src/parser.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2343,7 +2340,7 @@ static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 218 "src/parser.l"
+#line 215 "src/parser.l"
 
 
 
