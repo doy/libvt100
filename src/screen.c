@@ -11,9 +11,6 @@ static struct vt100_row *vt100_screen_row_at(VT100Screen *vt, int row);
 static void vt100_screen_scroll_down(VT100Screen *vt, int count);
 static void vt100_screen_scroll_up(VT100Screen *vt, int count);
 static int vt100_screen_scroll_region_is_active(VT100Screen *vt);
-static int vt100_screen_loc_is_between(
-    VT100Screen *vt, struct vt100_loc loc,
-    struct vt100_loc start, struct vt100_loc end);
 static int vt100_screen_row_max_col(VT100Screen *vt, int row);
 
 VT100Screen *vt100_screen_new(int rows, int cols)
@@ -108,36 +105,6 @@ int vt100_screen_process_string(VT100Screen *vt, char *buf, size_t len)
     remaining = vt100_parser_yylex(vt->scanner);
     vt100_parser_yy_delete_buffer(vt->state, vt->scanner);
     return len - remaining;
-}
-
-int vt100_screen_loc_is_selected(VT100Screen *vt, struct vt100_loc loc)
-{
-    struct vt100_loc start = vt->grid->selection_start;
-    struct vt100_loc end = vt->grid->selection_end;
-
-    if (!vt->has_selection) {
-        return 0;
-    }
-
-    if (loc.row == start.row) {
-        int start_max_col;
-
-        start_max_col = vt100_screen_row_max_col(vt, start.row);
-        if (start.col > start_max_col) {
-            start.col = vt->grid->max.col;
-        }
-    }
-
-    if (loc.row == end.row) {
-        int end_max_col;
-
-        end_max_col = vt100_screen_row_max_col(vt, end.row);
-        if (end.col > end_max_col) {
-            end.col = vt->grid->max.col;
-        }
-    }
-
-    return vt100_screen_loc_is_between(vt, loc, start, end);
 }
 
 void vt100_screen_get_string(
@@ -935,35 +902,6 @@ static int vt100_screen_scroll_region_is_active(VT100Screen *vt)
 {
     return vt->grid->scroll_top != 0
         || vt->grid->scroll_bottom != vt->grid->max.row - 1;
-}
-
-static int vt100_screen_loc_is_between(
-    VT100Screen *vt, struct vt100_loc loc,
-    struct vt100_loc start, struct vt100_loc end)
-{
-    UNUSED(vt);
-
-    if (end.row < start.row || (end.row == start.row && end.col < start.col)) {
-        struct vt100_loc tmp;
-
-        tmp = start;
-        start = end;
-        end = tmp;
-    }
-
-    if (loc.row < start.row || loc.row > end.row) {
-        return 0;
-    }
-
-    if (loc.row == start.row && loc.col < start.col) {
-        return 0;
-    }
-
-    if (loc.row == end.row && loc.col >= end.col) {
-        return 0;
-    }
-
-    return 1;
 }
 
 static int vt100_screen_row_max_col(VT100Screen *vt, int row)
