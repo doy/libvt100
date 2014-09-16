@@ -6,6 +6,12 @@
 #include "vt100.h"
 #include "parser.h"
 
+static void vt100_screen_get_string(
+    VT100Screen *vt, struct vt100_loc *start, struct vt100_loc *end,
+    char **strp, size_t *lenp, int formatted);
+static void vt100_screen_push_string(char **strp, size_t *lenp,
+                                     size_t *capacity, char *append,
+                                     size_t append_len);
 static void vt100_screen_ensure_capacity(VT100Screen *vt, int size);
 static struct vt100_row *vt100_screen_row_at(VT100Screen *vt, int row);
 static void vt100_screen_scroll_down(VT100Screen *vt, int count);
@@ -107,82 +113,18 @@ int vt100_screen_process_string(VT100Screen *vt, char *buf, size_t len)
     return len - remaining;
 }
 
-void vt100_screen_get_string(
+void vt100_screen_get_string_formatted(
     VT100Screen *vt, struct vt100_loc *start, struct vt100_loc *end,
     char **strp, size_t *lenp)
 {
-    int row, col;
-    size_t capacity = 8;
+    vt100_screen_get_string(vt, start, end, strp, lenp, 1);
+}
 
-    *lenp = 0;
-
-    if (end->row < start->row || (end->row == start->row && end->col <= start->col)) {
-        return;
-    }
-
-    *strp = malloc(capacity);
-
-    for (row = start->row; row <= end->row; ++row) {
-        int start_col, end_col, max_col;
-        struct vt100_row *grid_row = &vt->grid->rows[row];
-
-        max_col = vt100_screen_row_max_col(vt, row);
-
-        if (row == start->row) {
-            if (start->col > max_col) {
-                start_col = vt->grid->max.col;
-            }
-            else {
-                start_col = start->col;
-            }
-        }
-        else {
-            start_col = 0;
-        }
-
-        if (row == end->row) {
-            if (end->col > max_col) {
-                end_col = vt->grid->max.col;
-            }
-            else {
-                end_col = end->col;
-            }
-        }
-        else {
-            end_col = vt->grid->max.col;
-        }
-
-        if (end_col > max_col) {
-            end_col = max_col;
-        }
-
-        for (col = start_col; col < end_col; ++col) {
-            struct vt100_cell *cell = &grid_row->cells[col];
-            char *contents = cell->contents;
-            size_t len = cell->len;
-
-            if (cell->len == 0) {
-                contents = " ";
-                len = 1;
-            }
-
-            if (*lenp + len > capacity) {
-                capacity *= 1.5;
-                *strp = realloc(*strp, capacity);
-            }
-            memcpy(*strp + *lenp, contents, len);
-            *lenp += len;
-        }
-
-        if ((row != end->row || end->col > max_col) && !grid_row->wrapped) {
-            if (*lenp + 1 > capacity) {
-                capacity *= 1.5;
-                *strp = realloc(*strp, capacity);
-            }
-            memcpy(*strp + *lenp, "\n", 1);
-            *lenp += 1;
-        }
-    }
+void vt100_screen_get_string_plaintext(
+    VT100Screen *vt, struct vt100_loc *start, struct vt100_loc *end,
+    char **strp, size_t *lenp)
+{
+    vt100_screen_get_string(vt, start, end, strp, lenp, 0);
 }
 
 struct vt100_cell *vt100_screen_cell_at(VT100Screen *vt, int row, int col)
@@ -790,6 +732,155 @@ void vt100_screen_delete(VT100Screen *vt)
 {
     vt100_screen_cleanup(vt);
     free(vt);
+}
+
+static void vt100_screen_get_string(
+    VT100Screen *vt, struct vt100_loc *start, struct vt100_loc *end,
+    char **strp, size_t *lenp, int formatted)
+{
+    int row, col;
+    size_t capacity = 8;
+    struct vt100_cell_attrs attrs;
+
+    memset(&attrs, 0, sizeof(struct vt100_cell_attrs));
+
+    *lenp = 0;
+
+    if (end->row < start->row || (end->row == start->row && end->col <= start->col)) {
+        return;
+    }
+
+    *strp = malloc(capacity);
+
+    for (row = start->row; row <= end->row; ++row) {
+        int start_col, end_col, max_col;
+        struct vt100_row *grid_row = &vt->grid->rows[row];
+
+        max_col = vt100_screen_row_max_col(vt, row);
+
+        if (row == start->row) {
+            if (start->col > max_col) {
+                start_col = vt->grid->max.col;
+            }
+            else {
+                start_col = start->col;
+            }
+        }
+        else {
+            start_col = 0;
+        }
+
+        if (row == end->row) {
+            if (end->col > max_col) {
+                end_col = vt->grid->max.col;
+            }
+            else {
+                end_col = end->col;
+            }
+        }
+        else {
+            end_col = vt->grid->max.col;
+        }
+
+        if (end_col > max_col) {
+            end_col = max_col;
+        }
+
+        for (col = start_col; col < end_col; ++col) {
+            struct vt100_cell *cell = &grid_row->cells[col];
+            char *contents = cell->contents;
+            size_t len = cell->len;
+
+            if (formatted
+                && memcmp(&attrs, &cell->attrs,
+                          sizeof(struct vt100_cell_attrs))) {
+                int attr_codes[6] = { 0 };
+                int first = 1;
+                size_t i;
+
+                if (attrs.fgcolor.id != cell->attrs.fgcolor.id) {
+                    switch (cell->attrs.fgcolor.type) {
+                    case VT100_COLOR_DEFAULT:
+                        attr_codes[0] = 39;
+                        break;
+                    case VT100_COLOR_IDX:
+                        attr_codes[0] = 30 + cell->attrs.fgcolor.idx;
+                        break;
+                    case VT100_COLOR_RGB:
+                        // XXX
+                        break;
+                    }
+                }
+                if (attrs.bgcolor.id != cell->attrs.bgcolor.id) {
+                    switch (cell->attrs.bgcolor.type) {
+                    case VT100_COLOR_DEFAULT:
+                        attr_codes[1] = 49;
+                        break;
+                    case VT100_COLOR_IDX:
+                        attr_codes[1] = 40 + cell->attrs.bgcolor.idx;
+                        break;
+                    case VT100_COLOR_RGB:
+                        // XXX
+                        break;
+                    }
+                }
+                if (attrs.bold != cell->attrs.bold) {
+                    attr_codes[2] = cell->attrs.bold ? 1 : 21;
+                }
+                if (attrs.italic != cell->attrs.italic) {
+                    attr_codes[3] = cell->attrs.italic ? 3 : 23;
+                }
+                if (attrs.underline != cell->attrs.underline) {
+                    attr_codes[4] = cell->attrs.underline ? 4 : 24;
+                }
+                if (attrs.inverse != cell->attrs.inverse) {
+                    attr_codes[5] = cell->attrs.inverse ? 7 : 27;
+                }
+                vt100_screen_push_string(strp, lenp, &capacity, "\e[", 2);
+                for (i = 0; i < sizeof(attr_codes) / sizeof(int); ++i) {
+                    char buf[3];
+
+                    if (!attr_codes[i]) {
+                        continue;
+                    }
+
+                    if (!first) {
+                        vt100_screen_push_string(strp, lenp, &capacity, ";", 1);
+                    }
+                    sprintf(buf, "%d", attr_codes[i]);
+                    vt100_screen_push_string(strp, lenp, &capacity, buf,
+                                             strlen(buf));
+
+                    first = 0;
+                }
+                vt100_screen_push_string(strp, lenp, &capacity, "m", 1);
+                memcpy(&attrs, &cell->attrs, sizeof(struct vt100_cell_attrs));
+            }
+
+            if (cell->len == 0) {
+                contents = " ";
+                len = 1;
+            }
+
+            vt100_screen_push_string(strp, lenp, &capacity, contents, len);
+        }
+
+        if ((row != end->row || end->col > max_col) && !grid_row->wrapped) {
+            vt100_screen_push_string(strp, lenp, &capacity, "\n", 1);
+        }
+    }
+}
+
+static void vt100_screen_push_string(char **strp, size_t *lenp,
+                                     size_t *capacity, char *append,
+                                     size_t append_len)
+{
+    if (*lenp + append_len > *capacity) {
+        *capacity *= 1.5;
+        *strp = realloc(*strp, *capacity);
+    }
+    memcpy(*strp + *lenp, append, append_len);
+    *lenp += append_len;
 }
 
 static void vt100_screen_ensure_capacity(VT100Screen *vt, int size)

@@ -120,7 +120,10 @@ void vt100_screen_set_window_size(VT100Screen *vt, int rows, int cols);
 void vt100_screen_set_scrollback_length(VT100Screen *vt, int rows);
 int vt100_screen_process_string(VT100Screen *vt, char *buf, size_t len);
 int vt100_screen_loc_is_selected(VT100Screen *vt, struct vt100_loc loc);
-void vt100_screen_get_string(
+void vt100_screen_get_string_plaintext(
+    VT100Screen *vt, struct vt100_loc *start, struct vt100_loc *end,
+    char **strp, size_t *lenp);
+void vt100_screen_get_string_formatted(
     VT100Screen *vt, struct vt100_loc *start, struct vt100_loc *end,
     char **strp, size_t *lenp);
 struct vt100_cell *vt100_screen_cell_at(VT100Screen *vt, int row, int col);
