@@ -205,6 +205,20 @@ void vt100_screen_show_string_ascii(VT100Screen *vt, char *buf, size_t len)
     size_t i;
     int col = vt->grid->cur.col;
 
+    if (len) {
+        vt->dirty = 1;
+
+        if (col > 0) {
+            struct vt100_cell *cell;
+
+            cell = vt100_screen_cell_at(vt, vt->grid->cur.row, col - 1);
+            if (cell->is_wide) {
+                cell->len = 1;
+                cell->contents[0] = ' ';
+            }
+        }
+    }
+
     for (i = 0; i < len; ++i) {
         struct vt100_cell *cell;
 
@@ -221,14 +235,26 @@ void vt100_screen_show_string_ascii(VT100Screen *vt, char *buf, size_t len)
         cell->is_wide = 0;
     }
     vt100_screen_move_to(vt, vt->grid->cur.row, col);
-
-    vt->dirty = 1;
 }
 
 void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
 {
     char *c = buf, *next;
     int col = vt->grid->cur.col;
+
+    if (len) {
+        vt->dirty = 1;
+
+        if (col > 0) {
+            struct vt100_cell *cell;
+
+            cell = vt100_screen_cell_at(vt, vt->grid->cur.row, col - 1);
+            if (cell->is_wide) {
+                cell->len = 1;
+                cell->contents[0] = ' ';
+            }
+        }
+    }
 
     /* XXX need to detect combining characters and append them to the previous
      * cell */
@@ -293,8 +319,6 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
         }
     }
     vt100_screen_move_to(vt, vt->grid->cur.row, col);
-
-    vt->dirty = 1;
 }
 
 void vt100_screen_move_to(VT100Screen *vt, int row, int col)
