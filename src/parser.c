@@ -657,11 +657,13 @@ static yyconst flex_int16_t yy_chk[780] =
 
 #include "vt100.h"
 
+#define UNUSED(x) ((void)x)
+
 #define VT100_PARSER_CSI_MAX_PARAMS 256
 
 #define YY_EXIT_FAILURE (UNUSED(yyscanner), 2)
 #define YY_NO_INPUT 1
-#line 84 "src/parser.l"
+#line 86 "src/parser.l"
 static void vt100_parser_handle_bel(VT100Screen *vt);
 static void vt100_parser_handle_bs(VT100Screen *vt);
 static void vt100_parser_handle_tab(VT100Screen *vt);
@@ -702,7 +704,7 @@ static void vt100_parser_handle_osc1(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_osc2(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_ascii(VT100Screen *vt, char *text, size_t len);
 static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
-#line 706 "src/parser.c"
+#line 708 "src/parser.c"
 
 #define INITIAL 0
 
@@ -950,10 +952,10 @@ YY_DECL
 		}
 
 	{
-#line 126 "src/parser.l"
+#line 128 "src/parser.l"
 
 
-#line 957 "src/parser.c"
+#line 959 "src/parser.c"
 
 	while ( 1 )		/* loops until end-of-file is reached */
 		{
@@ -1008,232 +1010,232 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 128 "src/parser.l"
+#line 130 "src/parser.l"
 vt100_parser_handle_bel(yyextra);
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 129 "src/parser.l"
+#line 131 "src/parser.l"
 vt100_parser_handle_bs(yyextra);
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 130 "src/parser.l"
+#line 132 "src/parser.l"
 vt100_parser_handle_tab(yyextra);
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
-#line 132 "src/parser.l"
+#line 134 "src/parser.l"
 case 5:
 /* rule 5 can match eol */
-#line 133 "src/parser.l"
+#line 135 "src/parser.l"
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 133 "src/parser.l"
+#line 135 "src/parser.l"
 vt100_parser_handle_lf(yyextra);
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 134 "src/parser.l"
+#line 136 "src/parser.l"
 vt100_parser_handle_cr(yyextra);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 135 "src/parser.l"
+#line 137 "src/parser.l"
 
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 137 "src/parser.l"
+#line 139 "src/parser.l"
 vt100_parser_handle_deckpam(yyextra);
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 138 "src/parser.l"
+#line 140 "src/parser.l"
 vt100_parser_handle_deckpnm(yyextra);
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 139 "src/parser.l"
+#line 141 "src/parser.l"
 vt100_parser_handle_ri(yyextra);
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 140 "src/parser.l"
+#line 142 "src/parser.l"
 vt100_parser_handle_ris(yyextra);
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 141 "src/parser.l"
+#line 143 "src/parser.l"
 vt100_parser_handle_vb(yyextra);
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 142 "src/parser.l"
+#line 144 "src/parser.l"
 vt100_parser_handle_decsc(yyextra);
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 143 "src/parser.l"
+#line 145 "src/parser.l"
 vt100_parser_handle_decrc(yyextra);
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 145 "src/parser.l"
+#line 147 "src/parser.l"
 vt100_parser_handle_ich(yyextra, yytext, yyleng);
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 146 "src/parser.l"
+#line 148 "src/parser.l"
 vt100_parser_handle_cuu(yyextra, yytext, yyleng);
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 147 "src/parser.l"
+#line 149 "src/parser.l"
 vt100_parser_handle_cud(yyextra, yytext, yyleng);
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 148 "src/parser.l"
+#line 150 "src/parser.l"
 vt100_parser_handle_cuf(yyextra, yytext, yyleng);
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 149 "src/parser.l"
+#line 151 "src/parser.l"
 vt100_parser_handle_cub(yyextra, yytext, yyleng);
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 150 "src/parser.l"
+#line 152 "src/parser.l"
 vt100_parser_handle_cha(yyextra, yytext, yyleng);
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 151 "src/parser.l"
+#line 153 "src/parser.l"
 vt100_parser_handle_cup(yyextra, yytext, yyleng);
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 152 "src/parser.l"
+#line 154 "src/parser.l"
 vt100_parser_handle_ed(yyextra, yytext, yyleng);
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 153 "src/parser.l"
+#line 155 "src/parser.l"
 vt100_parser_handle_el(yyextra, yytext, yyleng);
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 154 "src/parser.l"
+#line 156 "src/parser.l"
 vt100_parser_handle_il(yyextra, yytext, yyleng);
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 155 "src/parser.l"
+#line 157 "src/parser.l"
 vt100_parser_handle_dl(yyextra, yytext, yyleng);
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 156 "src/parser.l"
+#line 158 "src/parser.l"
 vt100_parser_handle_dch(yyextra, yytext, yyleng);
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 157 "src/parser.l"
+#line 159 "src/parser.l"
 vt100_parser_handle_vpa(yyextra, yytext, yyleng);
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 158 "src/parser.l"
+#line 160 "src/parser.l"
 vt100_parser_handle_sm(yyextra, yytext, yyleng);
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 159 "src/parser.l"
+#line 161 "src/parser.l"
 vt100_parser_handle_rm(yyextra, yytext, yyleng);
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 160 "src/parser.l"
+#line 162 "src/parser.l"
 vt100_parser_handle_sgr(yyextra, yytext, yyleng);
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 161 "src/parser.l"
+#line 163 "src/parser.l"
 vt100_parser_handle_csr(yyextra, yytext, yyleng);
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 163 "src/parser.l"
+#line 165 "src/parser.l"
 vt100_parser_handle_decsed(yyextra, yytext, yyleng);
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 164 "src/parser.l"
+#line 166 "src/parser.l"
 vt100_parser_handle_decsel(yyextra, yytext, yyleng);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 166 "src/parser.l"
+#line 168 "src/parser.l"
 vt100_parser_handle_osc0(yyextra, yytext, yyleng);
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 167 "src/parser.l"
+#line 169 "src/parser.l"
 vt100_parser_handle_osc1(yyextra, yytext, yyleng);
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 168 "src/parser.l"
+#line 170 "src/parser.l"
 vt100_parser_handle_osc2(yyextra, yytext, yyleng);
 	YY_BREAK
 case 38:
-#line 171 "src/parser.l"
-case 39:
-#line 172 "src/parser.l"
-case 40:
 #line 173 "src/parser.l"
+case 39:
+#line 174 "src/parser.l"
+case 40:
+#line 175 "src/parser.l"
 case 41:
 YY_RULE_SETUP
-#line 173 "src/parser.l"
+#line 175 "src/parser.l"
 
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 175 "src/parser.l"
+#line 177 "src/parser.l"
 vt100_parser_handle_ascii(yyextra, yytext, yyleng);
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 176 "src/parser.l"
+#line 178 "src/parser.l"
 vt100_parser_handle_text(yyextra, yytext, yyleng);
 	YY_BREAK
 case 44:
-#line 179 "src/parser.l"
-case 45:
-#line 180 "src/parser.l"
-case 46:
 #line 181 "src/parser.l"
-case 47:
+case 45:
 #line 182 "src/parser.l"
-case 48:
+case 46:
 #line 183 "src/parser.l"
-case 49:
+case 47:
 #line 184 "src/parser.l"
+case 48:
+#line 185 "src/parser.l"
+case 49:
+#line 186 "src/parser.l"
 case 50:
 YY_RULE_SETUP
-#line 184 "src/parser.l"
+#line 186 "src/parser.l"
 return yyleng;
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 186 "src/parser.l"
+#line 188 "src/parser.l"
 return 0;
 	YY_BREAK
 case 51:
 /* rule 51 can match eol */
 YY_RULE_SETUP
-#line 188 "src/parser.l"
+#line 190 "src/parser.l"
 {
     fprintf(stderr,
         "unhandled CSI sequence: \\033%s\\%hho\n",
@@ -1242,14 +1244,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 194 "src/parser.l"
+#line 196 "src/parser.l"
 {
     fprintf(stderr, "unhandled CSI sequence: \\033%s\n", yytext + 1);
 }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 198 "src/parser.l"
+#line 200 "src/parser.l"
 {
     yytext[yyleng - 1] = '\0';
     fprintf(stderr,
@@ -1260,14 +1262,14 @@ YY_RULE_SETUP
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 205 "src/parser.l"
+#line 207 "src/parser.l"
 {
     fprintf(stderr, "unhandled escape sequence: \\%hho\n", yytext[1]);
 }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 209 "src/parser.l"
+#line 211 "src/parser.l"
 {
     fprintf(stderr, "unhandled escape sequence: %s\n", yytext + 1);
 }
@@ -1275,24 +1277,24 @@ YY_RULE_SETUP
 case 56:
 /* rule 56 can match eol */
 YY_RULE_SETUP
-#line 213 "src/parser.l"
+#line 215 "src/parser.l"
 {
     fprintf(stderr, "unhandled control character: \\%hho\n", yytext[0]);
 }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 217 "src/parser.l"
+#line 219 "src/parser.l"
 {
     fprintf(stderr, "invalid utf8 byte: \\%hho\n", yytext[0]);
 }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 221 "src/parser.l"
+#line 223 "src/parser.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1296 "src/parser.c"
+#line 1298 "src/parser.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2384,7 +2386,7 @@ static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 221 "src/parser.l"
+#line 223 "src/parser.l"
 
 
 

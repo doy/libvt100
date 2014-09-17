@@ -75,12 +75,7 @@ struct vt100_grid {
     struct vt100_row *rows;
 };
 
-/* XXX including parser.h in a place which would be visible here breaks things,
- * so we copy these defintions over here */
-typedef void* yyscan_t;
-struct yy_buffer_state;
-typedef struct yy_buffer_state *YY_BUFFER_STATE;
-
+struct vt100_parser_state;
 struct vt100_screen {
     struct vt100_grid *grid;
     struct vt100_grid *alternate;
@@ -94,8 +89,7 @@ struct vt100_screen {
 
     int scrollback_length;
 
-    yyscan_t scanner;
-    YY_BUFFER_STATE state;
+    struct vt100_parser_state *parser_state;
 
     unsigned char hide_cursor: 1;
     unsigned char application_keypad: 1;

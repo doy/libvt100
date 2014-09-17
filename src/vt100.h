@@ -7,6 +7,4 @@ typedef struct vt100_screen VT100Screen;
 
 #include "screen.h"
 
-#define UNUSED(x) ((void)x)
-
 #endif

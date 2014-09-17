@@ -3,6 +3,8 @@
 
 #include "vt100.h"
 
+#define UNUSED(x) ((void)x)
+
 #define VT100_PARSER_CSI_MAX_PARAMS 256
 
 #define YY_EXIT_FAILURE (UNUSED(yyscanner), 2)
