@@ -102,6 +102,8 @@ struct vt100_screen {
     unsigned char application_cursor: 1;
     unsigned char mouse_reporting_press: 1;
     unsigned char mouse_reporting_press_release: 1;
+    unsigned char mouse_reporting_button_motion: 1;
+    unsigned char mouse_reporting_sgr_mode: 1;
     unsigned char bracketed_paste: 1;
 
     unsigned char visual_bell: 1;
@@ -175,6 +177,10 @@ void vt100_screen_set_mouse_reporting_press(VT100Screen *vt);
 void vt100_screen_reset_mouse_reporting_press(VT100Screen *vt);
 void vt100_screen_set_mouse_reporting_press_release(VT100Screen *vt);
 void vt100_screen_reset_mouse_reporting_press_release(VT100Screen *vt);
+void vt100_screen_set_mouse_reporting_button_motion(VT100Screen *vt);
+void vt100_screen_reset_mouse_reporting_button_motion(VT100Screen *vt);
+void vt100_screen_set_mouse_reporting_sgr_mode(VT100Screen *vt);
+void vt100_screen_reset_mouse_reporting_sgr_mode(VT100Screen *vt);
 void vt100_screen_set_bracketed_paste(VT100Screen *vt);
 void vt100_screen_reset_bracketed_paste(VT100Screen *vt);
 void vt100_screen_set_window_title(VT100Screen *vt, char *buf, size_t len);
