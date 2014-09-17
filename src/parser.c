@@ -1253,48 +1253,64 @@ case 53:
 YY_RULE_SETUP
 #line 200 "src/parser.l"
 {
-    yytext[yyleng - 1] = '\0';
-    fprintf(stderr,
-        "unhandled OSC sequence: \\033%s\\007\n",
-        yytext + 1);
+    if (!strncmp(yytext, "\e]50;", 5)) { // osx terminal.app private stuff
+        // not interested in non-portable extensions
+    }
+    else if (!strncmp(yytext, "\e]499;", 5)) { // termcast private metadata
+        // this isn't intended to be interpreted
+    }
+    else {
+        yytext[yyleng - 1] = '\0';
+        fprintf(stderr,
+            "unhandled OSC sequence: \\033%s\\007\n",
+            yytext + 1);
+    }
 }
 	YY_BREAK
 case 54:
 /* rule 54 can match eol */
 YY_RULE_SETUP
-#line 207 "src/parser.l"
+#line 215 "src/parser.l"
 {
     fprintf(stderr, "unhandled escape sequence: \\%hho\n", yytext[1]);
 }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 211 "src/parser.l"
+#line 219 "src/parser.l"
 {
-    fprintf(stderr, "unhandled escape sequence: %s\n", yytext + 1);
+    switch (yytext[1]) {
+    case '(': // character sets
+        // not interested in implementing character sets, unicode should be
+        // sufficient
+        break;
+    default:
+        fprintf(stderr, "unhandled escape sequence: %s\n", yytext + 1);
+        break;
+    }
 }
 	YY_BREAK
 case 56:
 /* rule 56 can match eol */
 YY_RULE_SETUP
-#line 215 "src/parser.l"
+#line 231 "src/parser.l"
 {
     fprintf(stderr, "unhandled control character: \\%hho\n", yytext[0]);
 }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 219 "src/parser.l"
+#line 235 "src/parser.l"
 {
     fprintf(stderr, "invalid utf8 byte: \\%hho\n", yytext[0]);
 }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 223 "src/parser.l"
+#line 239 "src/parser.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1298 "src/parser.c"
+#line 1314 "src/parser.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2386,7 +2402,7 @@ static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 223 "src/parser.l"
+#line 239 "src/parser.l"
 
 
 
@@ -2694,6 +2710,16 @@ static void vt100_parser_handle_sm(VT100Screen *vt, char *buf, size_t len)
             case 2004:
                 vt100_screen_set_bracketed_paste(vt);
                 break;
+            case 12: // blinking cursor
+                // not interested in blinking cursors
+            case 1005: // UTF-8 mouse tracking mode
+                // will just default this to always on. might break some
+                // programs, but the programs that will break will already be
+                // broken for terms with width greater than 223.
+            case 1034: // interpret Meta key
+                // not actually sure if ignoring this is correct - need to see
+                // what exactly it does. don't think it's important though.
+                break;
             default:
                 fprintf(stderr,
                     "unknown SM parameter: %c%d\n", modes[i], params[i]);
@@ -2752,6 +2778,16 @@ static void vt100_parser_handle_rm(VT100Screen *vt, char *buf, size_t len)
                 break;
             case 2004:
                 vt100_screen_reset_bracketed_paste(vt);
+                break;
+            case 12: // blinking cursor
+                // not interested in blinking cursors
+            case 1005: // UTF-8 mouse tracking mode
+                // will just default this to always on. might break some
+                // programs, but the programs that will break will already be
+                // broken for terms with width greater than 223.
+            case 1034: // interpret Meta key
+                // not actually sure if ignoring this is correct - need to see
+                // what exactly it does. don't think it's important though.
                 break;
             default:
                 fprintf(stderr,
@@ -2905,6 +2941,9 @@ static void vt100_parser_handle_sgr(VT100Screen *vt, char *buf, size_t len)
         case 100: case 101: case 102: case 103:
         case 104: case 105: case 106: case 107:
             vt100_screen_set_bg_color(vt, params[i] - 92);
+            break;
+        case 5: // blink mode
+            // blinking terminals are awful
             break;
         default:
             fprintf(stderr, "unknown SGR parameter: %d\n", params[i]);
