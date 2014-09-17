@@ -55,12 +55,14 @@ CUU {CSI}{CSIPARAM1}A
 CUD {CSI}{CSIPARAM1}B
 CUF {CSI}{CSIPARAM1}C
 CUB {CSI}{CSIPARAM1}D
+CHA {CSI}{CSIPARAM1}G
 CUP {CSI}{CSIPARAM2}H
 ED  {CSI}{CSIPARAM1}J
 EL  {CSI}{CSIPARAM1}K
 IL  {CSI}{CSIPARAM1}L
 DL  {CSI}{CSIPARAM1}M
 DCH {CSI}{CSIPARAM1}P
+VPA {CSI}{CSIPARAM1}d
 SM  {CSI}{SMPARAMS}h
 RM  {CSI}{SMPARAMS}l
 SGR {CSI}{CSIPARAMS}m
@@ -100,12 +102,14 @@ static void vt100_parser_handle_cuu(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_cud(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_cuf(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_cub(VT100Screen *vt, char *buf, size_t len);
+static void vt100_parser_handle_cha(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_cup(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_ed(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_el(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_il(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_dl(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_dch(VT100Screen *vt, char *buf, size_t len);
+static void vt100_parser_handle_vpa(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_sm(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_rm(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_sgr(VT100Screen *vt, char *buf, size_t len);
@@ -143,12 +147,14 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 {CUD}     vt100_parser_handle_cud(yyextra, yytext, yyleng);
 {CUF}     vt100_parser_handle_cuf(yyextra, yytext, yyleng);
 {CUB}     vt100_parser_handle_cub(yyextra, yytext, yyleng);
+{CHA}     vt100_parser_handle_cha(yyextra, yytext, yyleng);
 {CUP}     vt100_parser_handle_cup(yyextra, yytext, yyleng);
 {ED}      vt100_parser_handle_ed(yyextra, yytext, yyleng);
 {EL}      vt100_parser_handle_el(yyextra, yytext, yyleng);
 {IL}      vt100_parser_handle_il(yyextra, yytext, yyleng);
 {DL}      vt100_parser_handle_dl(yyextra, yytext, yyleng);
 {DCH}     vt100_parser_handle_dch(yyextra, yytext, yyleng);
+{VPA}     vt100_parser_handle_vpa(yyextra, yytext, yyleng);
 {SM}      vt100_parser_handle_sm(yyextra, yytext, yyleng);
 {RM}      vt100_parser_handle_rm(yyextra, yytext, yyleng);
 {SGR}     vt100_parser_handle_sgr(yyextra, yytext, yyleng);
@@ -375,6 +381,14 @@ static void vt100_parser_handle_cub(VT100Screen *vt, char *buf, size_t len)
         vt, vt->grid->cur.row, vt->grid->cur.col - params[0]);
 }
 
+static void vt100_parser_handle_cha(VT100Screen *vt, char *buf, size_t len)
+{
+    int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
+
+    vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
+    vt100_screen_move_to(vt, vt->grid->cur.row, params[0] - 1);
+}
+
 static void vt100_parser_handle_cup(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 0, 0 }, nparams;
@@ -455,6 +469,14 @@ static void vt100_parser_handle_dch(VT100Screen *vt, char *buf, size_t len)
 
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_delete_characters(vt, params[0]);
+}
+
+static void vt100_parser_handle_vpa(VT100Screen *vt, char *buf, size_t len)
+{
+    int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
+
+    vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
+    vt100_screen_move_to(vt, params[0] - 1, vt->grid->cur.col);
 }
 
 static void vt100_parser_handle_sm(VT100Screen *vt, char *buf, size_t len)
