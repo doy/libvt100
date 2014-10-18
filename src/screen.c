@@ -488,6 +488,27 @@ void vt100_screen_delete_lines(VT100Screen *vt, int count)
     vt->dirty = 1;
 }
 
+void vt100_screen_erase_characters(VT100Screen *vt, int count)
+{
+    if (count >= vt->grid->max.col - vt->grid->cur.col) {
+        vt100_screen_kill_line_forward(vt);
+    }
+    else {
+        struct vt100_row *row;
+        int i;
+
+        row = vt100_screen_row_at(vt, vt->grid->cur.row);
+
+        for (i = vt->grid->cur.col; i < vt->grid->cur.col + count; ++i) {
+            struct vt100_cell *cell = &row->cells[i];
+
+            cell->len = 0;
+        }
+    }
+
+    vt->dirty = 1;
+}
+
 void vt100_screen_set_scroll_region(
     VT100Screen *vt, int top, int bottom, int left, int right)
 {

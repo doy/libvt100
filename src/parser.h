@@ -330,7 +330,7 @@ extern int vt100_parser_yylex (yyscan_t yyscanner);
 #undef YY_DECL
 #endif
 
-#line 239 "src/parser.l"
+#line 241 "src/parser.l"
 
 
 #line 337 "src/parser.h"
