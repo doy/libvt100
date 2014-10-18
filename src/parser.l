@@ -188,7 +188,7 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 
 {CSI}[<=?]?{CSIPARAMS}{CTRL} {
     fprintf(stderr,
-        "unhandled CSI sequence: \\033%s\\%hho\n",
+        "unhandled CSI sequence: \\033%s\\%03hho\n",
         yytext + 1, yytext[yyleng - 1]);
 }
 
@@ -212,7 +212,7 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 }
 
 {ESC}{CTRL} {
-    fprintf(stderr, "unhandled escape sequence: \\%hho\n", yytext[1]);
+    fprintf(stderr, "unhandled escape sequence: \\%03hho\n", yytext[1]);
 }
 
 {ESC}{CHAR} {
@@ -228,11 +228,11 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 }
 
 {CTRL} {
-    fprintf(stderr, "unhandled control character: \\%hho\n", yytext[0]);
+    fprintf(stderr, "unhandled control character: \\%03hho\n", yytext[0]);
 }
 
 (?s:.) {
-    fprintf(stderr, "invalid utf8 byte: \\%hho\n", yytext[0]);
+    fprintf(stderr, "invalid utf8 byte: \\%03hho\n", yytext[0]);
 }
 
 %%
