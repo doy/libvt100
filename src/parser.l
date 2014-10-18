@@ -177,13 +177,12 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 {ASCII}+  vt100_parser_handle_ascii(yyextra, yytext, yyleng);
 {CHAR}+   vt100_parser_handle_text(yyextra, yytext, yyleng);
 
-{LEAD2}                      |
-{LEAD3}{CONT}?               |
-{LEAD4}{CONT}?{CONT}?        |
-{CSI}[<=?]?{CSIPARAMS}[0-9;] |
-{CSI}                        |
-{OSC}{CHAR}*                 |
-{ESC}                        return yyleng;
+{LEAD2}                       |
+{LEAD3}{CONT}?                |
+{LEAD4}{CONT}?{CONT}?         |
+{CSI}[<=?]?{CSIPARAMS}[0-9;]? |
+{OSC}{CHAR}*                  |
+{ESC}                         return yyleng;
 
 <<EOF>> return 0;
 
