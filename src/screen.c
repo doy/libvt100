@@ -802,7 +802,7 @@ static void vt100_screen_get_string(
     *strp = malloc(capacity);
 
     for (row = start->row; row <= end->row; ++row) {
-        int start_col, end_col, max_col;
+        int start_col, end_col, max_col, was_wide = 0;
         struct vt100_row *grid_row = &vt->grid->rows[row];
 
         max_col = vt100_screen_row_max_col(vt, row);
@@ -906,12 +906,16 @@ static void vt100_screen_get_string(
                 memcpy(&attrs, &cell->attrs, sizeof(struct vt100_cell_attrs));
             }
 
-            if (cell->len == 0) {
-                contents = " ";
-                len = 1;
+            if (!was_wide) {
+                if (cell->len == 0) {
+                    contents = " ";
+                    len = 1;
+                }
+
+                vt100_screen_push_string(strp, lenp, &capacity, contents, len);
             }
 
-            vt100_screen_push_string(strp, lenp, &capacity, contents, len);
+            was_wide = cell->is_wide;
         }
 
         if ((row != end->row || end->col > max_col) && !grid_row->wrapped) {
