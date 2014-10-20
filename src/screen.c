@@ -242,6 +242,7 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
                  * require an allocation */
                 normal = g_utf8_normalize(
                     cell->contents, cell->len, G_NORMALIZE_NFC);
+                cell->len = strlen(normal);
                 memcpy(cell->contents, normal, cell->len);
                 free(normal);
             }
