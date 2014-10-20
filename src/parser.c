@@ -1035,7 +1035,7 @@ vt100_parser_handle_cr(yyextra);
 case 8:
 YY_RULE_SETUP
 #line 139 "src/parser.l"
-
+/* ignored */
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
@@ -1196,7 +1196,7 @@ case 41:
 case 42:
 YY_RULE_SETUP
 #line 178 "src/parser.l"
-
+/* ignored */
 	YY_BREAK
 case 43:
 YY_RULE_SETUP

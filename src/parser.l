@@ -136,7 +136,7 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 {VT}      |
 {FF}      vt100_parser_handle_lf(yyextra);
 {CR}      vt100_parser_handle_cr(yyextra);
-{SI}
+{SI}      /* ignored */
 
 {DECKPAM} vt100_parser_handle_deckpam(yyextra);
 {DECKPNM} vt100_parser_handle_deckpnm(yyextra);
@@ -175,7 +175,7 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 {GZD4}    |
 {G1D4}    |
 {G2D4}    |
-{G3D4}
+{G3D4}    /* ignored */
 
 {ASCII}+  vt100_parser_handle_ascii(yyextra, yytext, yyleng);
 {CHAR}+   vt100_parser_handle_text(yyextra, yytext, yyleng);
