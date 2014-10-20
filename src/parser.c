@@ -2456,6 +2456,9 @@ static void vt100_parser_handle_ris(VT100Screen *vt)
     vt100_screen_reset_application_cursor(vt);
     vt100_screen_reset_mouse_reporting_press(vt);
     vt100_screen_reset_mouse_reporting_press_release(vt);
+    vt100_screen_reset_mouse_reporting_button_motion(vt);
+    vt100_screen_reset_mouse_reporting_sgr_mode(vt);
+    vt100_screen_reset_bracketed_paste(vt);
 }
 
 static void vt100_parser_handle_vb(VT100Screen *vt)
