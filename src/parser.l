@@ -496,7 +496,6 @@ static void vt100_parser_handle_il(VT100Screen *vt, char *buf, size_t len)
 
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_insert_lines(vt, params[0]);
-    vt100_screen_move_to(vt, vt->grid->cur.row, 0, 0);
 }
 
 static void vt100_parser_handle_dl(VT100Screen *vt, char *buf, size_t len)
@@ -505,7 +504,6 @@ static void vt100_parser_handle_dl(VT100Screen *vt, char *buf, size_t len)
 
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_delete_lines(vt, params[0]);
-    vt100_screen_move_to(vt, vt->grid->cur.row, 0, 0);
 }
 
 static void vt100_parser_handle_dch(VT100Screen *vt, char *buf, size_t len)
