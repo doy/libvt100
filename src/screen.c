@@ -203,8 +203,6 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
         }
     }
 
-    /* XXX need to detect combining characters and append them to the previous
-     * cell */
     while ((next = g_utf8_next_char(c))) {
         gunichar uc;
         struct vt100_cell *cell = NULL;
