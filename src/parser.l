@@ -430,7 +430,15 @@ static void vt100_parser_handle_ed(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 0 }, nparams;
 
-    vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
+    /* this also gets called by handle_decsed, which will pass it something
+     * of the form \e[?1J instead of \e[1J */
+    buf += 2;
+    len -= 3;
+    if (*buf == '?') {
+        buf++;
+        len--;
+    }
+    vt100_parser_extract_csi_params(buf, len, params, &nparams);
     switch (params[0]) {
     case 0:
         vt100_screen_clear_screen_forward(vt);
@@ -451,7 +459,15 @@ static void vt100_parser_handle_el(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 0 }, nparams;
 
-    vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
+    /* this also gets called by handle_decsel, which will pass it something
+     * of the form \e[?1J instead of \e[1J */
+    buf += 2;
+    len -= 3;
+    if (*buf == '?') {
+        buf++;
+        len--;
+    }
+    vt100_parser_extract_csi_params(buf, len, params, &nparams);
     switch (params[0]) {
     case 0:
         vt100_screen_kill_line_forward(vt);
