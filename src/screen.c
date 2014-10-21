@@ -288,8 +288,8 @@ void vt100_screen_move_to(VT100Screen *vt, int row, int col)
         col = 0;
     }
 
-    if (col > vt->grid->max.col) {
-        col = vt->grid->max.col;
+    if (col >= vt->grid->max.col) {
+        col = vt->grid->max.col - 1;
     }
 
     vt->grid->cur.row = row;
