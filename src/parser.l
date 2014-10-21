@@ -64,6 +64,8 @@ EL  {CSI}{CSIPARAM1}K
 IL  {CSI}{CSIPARAM1}L
 DL  {CSI}{CSIPARAM1}M
 DCH {CSI}{CSIPARAM1}P
+SU  {CSI}{CSIPARAM1}S
+SD  {CSI}{CSIPARAM1}T
 ECH {CSI}{CSIPARAM1}X
 VPA {CSI}{CSIPARAM1}d
 SM  {CSI}{SMPARAMS}h
@@ -112,6 +114,8 @@ static void vt100_parser_handle_el(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_il(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_dl(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_dch(VT100Screen *vt, char *buf, size_t len);
+static void vt100_parser_handle_su(VT100Screen *vt, char *buf, size_t len);
+static void vt100_parser_handle_sd(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_ech(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_vpa(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_sm(VT100Screen *vt, char *buf, size_t len);
@@ -158,6 +162,8 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 {IL}      vt100_parser_handle_il(yyextra, yytext, yyleng);
 {DL}      vt100_parser_handle_dl(yyextra, yytext, yyleng);
 {DCH}     vt100_parser_handle_dch(yyextra, yytext, yyleng);
+{SU}      vt100_parser_handle_su(yyextra, yytext, yyleng);
+{SD}      vt100_parser_handle_sd(yyextra, yytext, yyleng);
 {ECH}     vt100_parser_handle_ech(yyextra, yytext, yyleng);
 {VPA}     vt100_parser_handle_vpa(yyextra, yytext, yyleng);
 {SM}      vt100_parser_handle_sm(yyextra, yytext, yyleng);
@@ -508,6 +514,28 @@ static void vt100_parser_handle_dch(VT100Screen *vt, char *buf, size_t len)
 
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_delete_characters(vt, params[0]);
+}
+
+static void vt100_parser_handle_su(VT100Screen *vt, char *buf, size_t len)
+{
+    int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
+
+    vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
+    if (params[0] == 0) {
+        params[0] = 1;
+    }
+    vt100_screen_scroll_up(vt, params[0]);
+}
+
+static void vt100_parser_handle_sd(VT100Screen *vt, char *buf, size_t len)
+{
+    int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
+
+    vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
+    if (params[0] == 0) {
+        params[0] = 1;
+    }
+    vt100_screen_scroll_down(vt, params[0]);
 }
 
 static void vt100_parser_handle_ech(VT100Screen *vt, char *buf, size_t len)

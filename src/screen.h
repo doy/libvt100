@@ -139,6 +139,8 @@ void vt100_screen_insert_lines(VT100Screen *vt, int count);
 void vt100_screen_delete_characters(VT100Screen *vt, int count);
 void vt100_screen_delete_lines(VT100Screen *vt, int count);
 void vt100_screen_erase_characters(VT100Screen *vt, int count);
+void vt100_screen_scroll_down(VT100Screen *vt, int count);
+void vt100_screen_scroll_up(VT100Screen *vt, int count);
 void vt100_screen_set_scroll_region(
     VT100Screen *vt, int top, int bottom, int left, int right);
 void vt100_screen_reset_text_attributes(VT100Screen *vt);
