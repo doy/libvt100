@@ -423,6 +423,14 @@ static void vt100_parser_handle_cup(VT100Screen *vt, char *buf, size_t len)
     if (params[1] == 0) {
         params[1] = 1;
     }
+    /* this needs to be fixed up here (and not in screen.c) because CUP hsould
+     * never cause scrolling */
+    if (params[0] > vt->grid->max.row) {
+        params[0] = vt->grid->max.row;
+    }
+    if (params[1] > vt->grid->max.col) {
+        params[1] = vt->grid->max.col;
+    }
     vt100_screen_move_to(vt, params[0] - 1, params[1] - 1);
 }
 
