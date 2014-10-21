@@ -273,13 +273,13 @@ void vt100_screen_move_to(VT100Screen *vt, int row, int col, int scroll)
 
     if (row > bottom) {
         if (scroll) {
-            vt100_screen_scroll_down(vt, row - bottom);
+            vt100_screen_scroll_up(vt, row - bottom);
         }
         row = bottom;
     }
     else if (row < top) {
         if (scroll) {
-            vt100_screen_scroll_up(vt, top - row);
+            vt100_screen_scroll_down(vt, top - row);
         }
         row = top;
     }
@@ -513,6 +513,39 @@ void vt100_screen_erase_characters(VT100Screen *vt, int count)
 void vt100_screen_scroll_down(VT100Screen *vt, int count)
 {
     struct vt100_row *row;
+    int bottom = vt->grid->scroll_bottom, top = vt->grid->scroll_top;
+    int i;
+
+    if (bottom - top + 1 > count) {
+        for (i = 0; i < count; ++i) {
+            row = vt100_screen_row_at(vt, bottom - i);
+            free(row->cells);
+        }
+        row = vt100_screen_row_at(vt, top);
+        memmove(
+            row + count, row,
+            (bottom - top + 1 - count) * sizeof(struct vt100_row));
+        for (i = 0; i < count; ++i) {
+            row = vt100_screen_row_at(vt, top + i);
+            row->cells = calloc(vt->grid->max.col, sizeof(struct vt100_cell));
+            row->wrapped = 0;
+        }
+    }
+    else {
+        for (i = 0; i < bottom - top + 1; ++i) {
+            row = vt100_screen_row_at(vt, top + i);
+            memset(
+                row->cells, 0, vt->grid->max.col * sizeof(struct vt100_cell));
+            row->wrapped = 0;
+        }
+    }
+
+    vt->dirty = 1;
+}
+
+void vt100_screen_scroll_up(VT100Screen *vt, int count)
+{
+    struct vt100_row *row;
     int i;
 
     if (vt100_screen_scroll_region_is_active(vt) || vt->alternate) {
@@ -573,39 +606,6 @@ void vt100_screen_scroll_down(VT100Screen *vt, int count)
             }
             vt->grid->row_count += count;
             vt->grid->row_top += count;
-        }
-    }
-
-    vt->dirty = 1;
-}
-
-void vt100_screen_scroll_up(VT100Screen *vt, int count)
-{
-    struct vt100_row *row;
-    int bottom = vt->grid->scroll_bottom, top = vt->grid->scroll_top;
-    int i;
-
-    if (bottom - top + 1 > count) {
-        for (i = 0; i < count; ++i) {
-            row = vt100_screen_row_at(vt, bottom - i);
-            free(row->cells);
-        }
-        row = vt100_screen_row_at(vt, top);
-        memmove(
-            row + count, row,
-            (bottom - top + 1 - count) * sizeof(struct vt100_row));
-        for (i = 0; i < count; ++i) {
-            row = vt100_screen_row_at(vt, top + i);
-            row->cells = calloc(vt->grid->max.col, sizeof(struct vt100_cell));
-            row->wrapped = 0;
-        }
-    }
-    else {
-        for (i = 0; i < bottom - top + 1; ++i) {
-            row = vt100_screen_row_at(vt, top + i);
-            memset(
-                row->cells, 0, vt->grid->max.col * sizeof(struct vt100_cell));
-            row->wrapped = 0;
         }
     }
 
