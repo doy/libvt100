@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
     size_t offset = 0;
     int i, j, skip;
 
-    vt = vt100_screen_new();
-    vt100_screen_set_window_size(vt);
+    vt = vt100_screen_new(24, 80);
+    // vt100_screen_set_window_size(vt);
 
     for (;;) {
         size_t bytes, parsed;
