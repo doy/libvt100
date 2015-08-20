@@ -177,6 +177,7 @@ void vt100_screen_set_bracketed_paste(VT100Screen *vt);
 void vt100_screen_reset_bracketed_paste(VT100Screen *vt);
 void vt100_screen_set_window_title(VT100Screen *vt, char *buf, size_t len);
 void vt100_screen_set_icon_name(VT100Screen *vt, char *buf, size_t len);
+int vt100_screen_row_max_col(VT100Screen *vt, int row);
 void vt100_screen_cleanup(VT100Screen *vt);
 void vt100_screen_delete(VT100Screen *vt);
 

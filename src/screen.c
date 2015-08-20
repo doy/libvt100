@@ -20,7 +20,6 @@ static void vt100_screen_push_string(char **strp, size_t *lenp,
 static void vt100_screen_ensure_capacity(VT100Screen *vt, int size);
 static struct vt100_row *vt100_screen_row_at(VT100Screen *vt, int row);
 static int vt100_screen_scroll_region_is_active(VT100Screen *vt);
-static int vt100_screen_row_max_col(VT100Screen *vt, int row);
 
 VT100Screen *vt100_screen_new(int rows, int cols)
 {
@@ -863,6 +862,20 @@ void vt100_screen_set_icon_name(VT100Screen *vt, char *buf, size_t len)
     vt->update_icon_name = 1;
 }
 
+int vt100_screen_row_max_col(VT100Screen *vt, int row)
+{
+    struct vt100_cell *cells = vt->grid->rows[row].cells;
+    int i, max = -1;
+
+    for (i = 0; i < vt->grid->max.col; ++i) {
+        if (cells[i].len) {
+            max = i;
+        }
+    }
+
+    return max + 1;
+}
+
 void vt100_screen_cleanup(VT100Screen *vt)
 {
     int i;
@@ -1071,18 +1084,4 @@ static int vt100_screen_scroll_region_is_active(VT100Screen *vt)
 {
     return vt->grid->scroll_top != 0
         || vt->grid->scroll_bottom != vt->grid->max.row - 1;
-}
-
-static int vt100_screen_row_max_col(VT100Screen *vt, int row)
-{
-    struct vt100_cell *cells = vt->grid->rows[row].cells;
-    int i, max = -1;
-
-    for (i = 0; i < vt->grid->max.col; ++i) {
-        if (cells[i].len) {
-            max = i;
-        }
-    }
-
-    return max + 1;
 }
