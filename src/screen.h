@@ -62,9 +62,6 @@ struct vt100_grid {
     struct vt100_loc max;
     struct vt100_loc saved;
 
-    struct vt100_loc selection_start;
-    struct vt100_loc selection_end;
-
     int scroll_top;
     int scroll_bottom;
 
@@ -104,7 +101,6 @@ struct vt100_screen {
     unsigned char audible_bell: 1;
     unsigned char update_title: 1;
     unsigned char update_icon_name: 1;
-    unsigned char has_selection: 1;
 
     unsigned char dirty: 1;
     unsigned char custom_scrollback_length: 1;
@@ -115,7 +111,6 @@ void vt100_screen_init(VT100Screen *vt);
 void vt100_screen_set_window_size(VT100Screen *vt, int rows, int cols);
 void vt100_screen_set_scrollback_length(VT100Screen *vt, int rows);
 int vt100_screen_process_string(VT100Screen *vt, char *buf, size_t len);
-int vt100_screen_loc_is_selected(VT100Screen *vt, struct vt100_loc loc);
 void vt100_screen_get_string_plaintext(
     VT100Screen *vt, struct vt100_loc *start, struct vt100_loc *end,
     char **strp, size_t *lenp);
