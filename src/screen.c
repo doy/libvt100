@@ -531,34 +531,11 @@ void vt100_screen_scroll_down(VT100Screen *vt, int count)
         }
     }
     else {
-        int scrollback = vt->scrollback_length;
-
-        if (vt->grid->row_count + count > scrollback) {
-            int overflow = vt->grid->row_count + count - scrollback;
-
-            vt100_screen_ensure_capacity(vt, scrollback);
-            for (i = 0; i < overflow; ++i) {
-                free(vt->grid->rows[i].cells);
-            }
-            memmove(
-             &vt->grid->rows[0], &vt->grid->rows[overflow],
-             (scrollback - overflow) * sizeof(struct vt100_row));
-            for (i = scrollback - count; i < scrollback; ++i) {
-                vt->grid->rows[i].cells = calloc(
-                    vt->grid->max.col, sizeof(struct vt100_cell));
-            }
-            vt->grid->row_count = scrollback;
-            vt->grid->row_top = scrollback - vt->grid->max.row;
-        }
-        else {
-            vt100_screen_ensure_capacity(vt, vt->grid->row_count + count);
-            for (i = 0; i < count; ++i) {
-                row = vt100_screen_row_at(vt, i + vt->grid->max.row);
-                row->cells = calloc(
-                    vt->grid->max.col, sizeof(struct vt100_cell));
-            }
-            vt->grid->row_count += count;
-            vt->grid->row_top += count;
+        for (i = 0; i < bottom - top + 1; ++i) {
+            row = vt100_screen_row_at(vt, top + i);
+            memset(
+                row->cells, 0, vt->grid->max.col * sizeof(struct vt100_cell));
+            row->wrapped = 0;
         }
     }
 
