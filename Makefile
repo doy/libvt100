@@ -40,7 +40,7 @@ $(SRC)%.h: $(SRC)%.l
 
 clean:
 	rm -f $(OUT) $(SOUT) $(OBJ) $(OBJ:$(BUILD)%.o=$(BUILD).%.d)
-	@rmdir -p $(BUILD) > /dev/null 2>&1
+	@rmdir -p $(BUILD) > /dev/null 2>&1 || true
 
 -include $(OBJ:$(BUILD)%.o=$(BUILD).%.d)
 
