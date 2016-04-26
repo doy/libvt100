@@ -1,4 +1,5 @@
 OUT      = libvt100.so
+SOUT     = libvt100.a
 BUILD    = build/
 SRC      = src/
 OBJ      = $(BUILD)parser.o \
@@ -12,10 +13,17 @@ ALLLDFLAGS = $(shell pkg-config --libs $(LIBS)) $(LDFLAGS)
 
 MAKEDEPEND = $(CC) $(ALLCFLAGS) -M -MP -MT '$@ $(@:$(BUILD)%.o=$(BUILD).%.d)'
 
+all: $(OUT) $(SOUT)
+
 build: $(OUT)
+
+static: $(SOUT)
 
 $(OUT): $(OBJ)
 	$(CC) $(ALLLDFLAGS) -fPIC -shared -o $@ $^
+
+$(SOUT): $(OBJ)
+	$(AR) rcs $@ $^
 
 $(BUILD)%.o: $(SRC)%.c
 	@mkdir -p $(BUILD)
@@ -31,7 +39,7 @@ $(SRC)%.h: $(SRC)%.l
 	$(LEX) --header-file=$(<:.l=.h) -o /dev/null $<
 
 clean:
-	rm -f $(OUT) $(OBJ) $(OBJ:$(BUILD)%.o=$(BUILD).%.d)
+	rm -f $(OUT) $(SOUT) $(OBJ) $(OBJ:$(BUILD)%.o=$(BUILD).%.d)
 	@rmdir -p $(BUILD) > /dev/null 2>&1
 
 -include $(OBJ:$(BUILD)%.o=$(BUILD).%.d)
