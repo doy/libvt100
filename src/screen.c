@@ -210,7 +210,7 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
 
         uc = g_utf8_get_char(c);
         /* XXX handle zero width characters */
-        is_wide = g_unichar_iswide(uc);
+        is_wide = vt100_is_wide_char(uc);
         ctype = g_unichar_type(uc);
         /* XXX should this also include spacing marks? */
         is_combining = ctype == G_UNICODE_ENCLOSING_MARK

@@ -3,7 +3,8 @@ SOUT     = libvt100.a
 BUILD    = build/
 SRC      = src/
 OBJ      = $(BUILD)parser.o \
-	   $(BUILD)screen.o
+	   $(BUILD)screen.o \
+	   $(BUILD)unicode-extra.o
 LIBS     = glib-2.0
 CFLAGS  ?= -g -Wall -Wextra -Werror
 LDFLAGS ?= -g -Wall -Wextra -Werror

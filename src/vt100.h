@@ -6,5 +6,6 @@ struct vt100_screen;
 typedef struct vt100_screen VT100Screen;
 
 #include "screen.h"
+#include "unicode-extra.h"
 
 #endif
