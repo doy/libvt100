@@ -912,6 +912,7 @@ static void vt100_screen_get_string(
     *lenp = 0;
 
     if (end->row < start->row || (end->row == start->row && end->col <= start->col)) {
+        *strp = NULL;
         return;
     }
 
