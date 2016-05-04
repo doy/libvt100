@@ -270,7 +270,7 @@ static void vt100_parser_handle_bel(VT100Screen *vt)
 static void vt100_parser_handle_bs(VT100Screen *vt)
 {
     DEBUG_TRACE1("BS");
-    vt100_screen_move_to(vt, vt->grid->cur.row, vt->grid->cur.col - 1, 0);
+    vt100_screen_move_to(vt, vt->grid->cur.row, vt->grid->cur.col - 1);
 }
 
 static void vt100_parser_handle_tab(VT100Screen *vt)
@@ -278,19 +278,19 @@ static void vt100_parser_handle_tab(VT100Screen *vt)
     DEBUG_TRACE1("TAB");
     vt100_screen_move_to(
         vt, vt->grid->cur.row,
-        vt->grid->cur.col - (vt->grid->cur.col % 8) + 8, 0);
+        vt->grid->cur.col - (vt->grid->cur.col % 8) + 8);
 }
 
 static void vt100_parser_handle_lf(VT100Screen *vt)
 {
     DEBUG_TRACE1("LF");
-    vt100_screen_move_to(vt, vt->grid->cur.row + 1, vt->grid->cur.col, 1);
+    vt100_screen_move_down_or_scroll(vt);
 }
 
 static void vt100_parser_handle_cr(VT100Screen *vt)
 {
     DEBUG_TRACE1("CR");
-    vt100_screen_move_to(vt, vt->grid->cur.row, 0, 0);
+    vt100_screen_move_to(vt, vt->grid->cur.row, 0);
 }
 
 static void vt100_parser_handle_deckpam(VT100Screen *vt)
@@ -308,7 +308,7 @@ static void vt100_parser_handle_deckpnm(VT100Screen *vt)
 static void vt100_parser_handle_ri(VT100Screen *vt)
 {
     DEBUG_TRACE1("RI");
-    vt100_screen_move_to(vt, vt->grid->cur.row - 1, vt->grid->cur.col, 1);
+    vt100_screen_move_up_or_scroll(vt);
 }
 
 static void vt100_parser_handle_ris(VT100Screen *vt)
@@ -317,7 +317,7 @@ static void vt100_parser_handle_ris(VT100Screen *vt)
     vt100_screen_use_normal_buffer(vt);
     vt100_screen_set_scroll_region(
         vt, 0, vt->grid->max.row - 1, 0, vt->grid->max.col - 1);
-    vt100_screen_move_to(vt, 0, 0, 0);
+    vt100_screen_move_to(vt, 0, 0);
     vt100_screen_clear_screen(vt);
     vt100_screen_save_cursor(vt);
     vt100_screen_reset_text_attributes(vt);
@@ -406,21 +406,29 @@ static void vt100_parser_handle_ich(VT100Screen *vt, char *buf, size_t len)
 static void vt100_parser_handle_cuu(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
+    int row = vt->grid->cur.row, new_row;
 
     DEBUG_TRACE3("CUU", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
-    vt100_screen_move_to(
-        vt, vt->grid->cur.row - params[0], vt->grid->cur.col, 0);
+    new_row = row - params[0];
+    if (row >= vt->grid->scroll_top && new_row < vt->grid->scroll_top) {
+        new_row = vt->grid->scroll_top;
+    }
+    vt100_screen_move_to(vt, new_row, vt->grid->cur.col);
 }
 
 static void vt100_parser_handle_cud(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
+    int row = vt->grid->cur.row, new_row;
 
     DEBUG_TRACE3("CUD", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
-    vt100_screen_move_to(
-        vt, vt->grid->cur.row + params[0], vt->grid->cur.col, 0);
+    new_row = row + params[0];
+    if (row <= vt->grid->scroll_bottom && new_row > vt->grid->scroll_bottom) {
+        new_row = vt->grid->scroll_bottom;
+    }
+    vt100_screen_move_to(vt, new_row, vt->grid->cur.col);
 }
 
 static void vt100_parser_handle_cuf(VT100Screen *vt, char *buf, size_t len)
@@ -429,8 +437,7 @@ static void vt100_parser_handle_cuf(VT100Screen *vt, char *buf, size_t len)
 
     DEBUG_TRACE3("CUF", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
-    vt100_screen_move_to(
-        vt, vt->grid->cur.row, vt->grid->cur.col + params[0], 0);
+    vt100_screen_move_to(vt, vt->grid->cur.row, vt->grid->cur.col + params[0]);
 }
 
 static void vt100_parser_handle_cub(VT100Screen *vt, char *buf, size_t len)
@@ -439,8 +446,7 @@ static void vt100_parser_handle_cub(VT100Screen *vt, char *buf, size_t len)
 
     DEBUG_TRACE3("CUB", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
-    vt100_screen_move_to(
-        vt, vt->grid->cur.row, vt->grid->cur.col - params[0], 0);
+    vt100_screen_move_to(vt, vt->grid->cur.row, vt->grid->cur.col - params[0]);
 }
 
 static void vt100_parser_handle_cha(VT100Screen *vt, char *buf, size_t len)
@@ -449,7 +455,7 @@ static void vt100_parser_handle_cha(VT100Screen *vt, char *buf, size_t len)
 
     DEBUG_TRACE3("CHA", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
-    vt100_screen_move_to(vt, vt->grid->cur.row, params[0] - 1, 0);
+    vt100_screen_move_to(vt, vt->grid->cur.row, params[0] - 1);
 }
 
 static void vt100_parser_handle_cup(VT100Screen *vt, char *buf, size_t len)
@@ -464,7 +470,7 @@ static void vt100_parser_handle_cup(VT100Screen *vt, char *buf, size_t len)
     if (params[1] == 0) {
         params[1] = 1;
     }
-    vt100_screen_move_to(vt, params[0] - 1, params[1] - 1, 0);
+    vt100_screen_move_to(vt, params[0] - 1, params[1] - 1);
 }
 
 static void vt100_parser_handle_ed(VT100Screen *vt, char *buf, size_t len)
@@ -599,7 +605,7 @@ static void vt100_parser_handle_vpa(VT100Screen *vt, char *buf, size_t len)
 
     DEBUG_TRACE3("VPA", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
-    vt100_screen_move_to(vt, params[0] - 1, vt->grid->cur.col, 0);
+    vt100_screen_move_to(vt, params[0] - 1, vt->grid->cur.col);
 }
 
 static void vt100_parser_handle_sm(VT100Screen *vt, char *buf, size_t len)

@@ -170,7 +170,7 @@ void vt100_screen_show_string_ascii(VT100Screen *vt, char *buf, size_t len)
 
         if (col >= vt->grid->max.col) {
             vt100_screen_row_at(vt, vt->grid->cur.row)->wrapped = 1;
-            vt100_screen_move_to(vt, vt->grid->cur.row + 1, 0, 1);
+            vt100_screen_move_down_or_scroll(vt);
             col = 0;
         }
         cell = vt100_screen_cell_at(vt, vt->grid->cur.row, col++);
@@ -180,7 +180,7 @@ void vt100_screen_show_string_ascii(VT100Screen *vt, char *buf, size_t len)
         cell->attrs = vt->attrs;
         cell->is_wide = 0;
     }
-    vt100_screen_move_to(vt, vt->grid->cur.row, col, 0);
+    vt100_screen_move_to(vt, vt->grid->cur.row, col);
 }
 
 void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
@@ -245,7 +245,7 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
         else {
             if (col + (is_wide ? 2 : 1) > vt->grid->max.col) {
                 vt100_screen_row_at(vt, vt->grid->cur.row)->wrapped = 1;
-                vt100_screen_move_to(vt, vt->grid->cur.row + 1, 0, 1);
+                vt100_screen_move_down_or_scroll(vt);
                 col = 0;
             }
             cell = vt100_screen_cell_at(vt, vt->grid->cur.row, col);
@@ -263,33 +263,17 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
             break;
         }
     }
-    vt100_screen_move_to(vt, vt->grid->cur.row, col, 0);
+    vt100_screen_move_to(vt, vt->grid->cur.row, col);
 }
 
-void vt100_screen_move_to(VT100Screen *vt, int row, int col, int scroll)
+void vt100_screen_move_to(VT100Screen *vt, int row, int col)
 {
-    int top = vt->grid->scroll_top, bottom = vt->grid->scroll_bottom;
-
-    if (row > bottom) {
-        if (scroll) {
-            vt100_screen_scroll_up(vt, row - bottom);
-        }
-        row = bottom;
-    }
-    else if (row < top) {
-        if (scroll) {
-            vt100_screen_scroll_down(vt, top - row);
-        }
-        row = top;
-    }
-
-    if (col < 0) {
-        col = 0;
-    }
-
-    if (col >= vt->grid->max.col) {
-        col = vt->grid->max.col - 1;
-    }
+    row = row < 0                  ? 0
+        : row >= vt->grid->max.row ? vt->grid->max.row - 1
+        : row;
+    col = col < 0                  ? 0
+        : col >= vt->grid->max.col ? vt->grid->max.col - 1
+        : col;
 
     vt->grid->cur.row = row;
     vt->grid->cur.col = col;
@@ -609,6 +593,26 @@ void vt100_screen_scroll_up(VT100Screen *vt, int count)
     }
 
     vt->dirty = 1;
+}
+
+void vt100_screen_move_down_or_scroll(VT100Screen *vt)
+{
+    if (vt->grid->cur.row == vt->grid->scroll_bottom) {
+        vt100_screen_scroll_up(vt, 1);
+    }
+    else {
+        vt100_screen_move_to(vt, vt->grid->cur.row + 1, vt->grid->cur.col);
+    }
+}
+
+void vt100_screen_move_up_or_scroll(VT100Screen *vt)
+{
+    if (vt->grid->cur.row == vt->grid->scroll_top) {
+        vt100_screen_scroll_down(vt, 1);
+    }
+    else {
+        vt100_screen_move_to(vt, vt->grid->cur.row - 1, vt->grid->cur.col);
+    }
 }
 
 void vt100_screen_set_scroll_region(

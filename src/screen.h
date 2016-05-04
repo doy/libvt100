@@ -122,7 +122,7 @@ void vt100_screen_audible_bell(VT100Screen *vt);
 void vt100_screen_visual_bell(VT100Screen *vt);
 void vt100_screen_show_string_ascii(VT100Screen *vt, char *buf, size_t len);
 void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len);
-void vt100_screen_move_to(VT100Screen *vt, int row, int col, int scroll);
+void vt100_screen_move_to(VT100Screen *vt, int row, int col);
 void vt100_screen_clear_screen(VT100Screen *vt);
 void vt100_screen_clear_screen_forward(VT100Screen *vt);
 void vt100_screen_clear_screen_backward(VT100Screen *vt);
@@ -136,6 +136,8 @@ void vt100_screen_delete_lines(VT100Screen *vt, int count);
 void vt100_screen_erase_characters(VT100Screen *vt, int count);
 void vt100_screen_scroll_down(VT100Screen *vt, int count);
 void vt100_screen_scroll_up(VT100Screen *vt, int count);
+void vt100_screen_move_down_or_scroll(VT100Screen *vt);
+void vt100_screen_move_up_or_scroll(VT100Screen *vt);
 void vt100_screen_set_scroll_region(
     VT100Screen *vt, int top, int bottom, int left, int right);
 void vt100_screen_reset_text_attributes(VT100Screen *vt);
