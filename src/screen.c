@@ -628,8 +628,6 @@ void vt100_screen_set_scroll_region(
     vt->grid->scroll_bottom = bottom >= vt->grid->max.row
         ? vt->grid->max.row - 1
         : bottom;
-
-    vt100_screen_move_to(vt, vt->grid->scroll_top, 0, 0);
 }
 
 void vt100_screen_reset_text_attributes(VT100Screen *vt)

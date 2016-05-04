@@ -2521,6 +2521,7 @@ static void vt100_parser_handle_ris(VT100Screen *vt)
     vt100_screen_use_normal_buffer(vt);
     vt100_screen_set_scroll_region(
         vt, 0, vt->grid->max.row - 1, 0, vt->grid->max.col - 1);
+    vt100_screen_move_to(vt, 0, 0, 0);
     vt100_screen_clear_screen(vt);
     vt100_screen_save_cursor(vt);
     vt100_screen_reset_text_attributes(vt);
