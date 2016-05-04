@@ -1,8 +1,8 @@
 #ifndef _VT100_UNICODE_EXTRA_H
 #define _VT100_UNICODE_EXTRA_H
 
-#include <glib.h>
+#include <stdint.h>
 
-int vt100_is_wide_char(gunichar codepoint);
+int vt100_is_wide_char(uint32_t codepoint);
 
 #endif

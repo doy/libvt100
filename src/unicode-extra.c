@@ -1,4 +1,5 @@
 #include <glib.h>
+#include <stdint.h>
 
 #include "vt100.h"
 
@@ -23,8 +24,8 @@
  * http://www.unicode.org/Public/emoji/2.0//emoji-data.txt.
  */
 struct vt100_char_range {
-    gunichar start;
-    gunichar end;
+    uint32_t start;
+    uint32_t end;
 };
 
 static struct vt100_char_range vt100_wide_emoji[] = {
@@ -64,14 +65,14 @@ static struct vt100_char_range vt100_wide_emoji[] = {
     { 0x1F9C0, 0x1F9C0 },
 };
 
-static int vt100_is_wide_emoji(gunichar codepoint);
+static int vt100_is_wide_emoji(uint32_t codepoint);
 
-int vt100_is_wide_char(gunichar codepoint)
+int vt100_is_wide_char(uint32_t codepoint)
 {
     return g_unichar_iswide(codepoint) || vt100_is_wide_emoji(codepoint);
 }
 
-static int vt100_is_wide_emoji(gunichar codepoint)
+static int vt100_is_wide_emoji(uint32_t codepoint)
 {
     static size_t ranges = sizeof(vt100_wide_emoji) / sizeof(struct vt100_char_range);
     ssize_t low = 0, high = ranges - 1;
