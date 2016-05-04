@@ -8,8 +8,8 @@
 
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
-#define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 39
+#define YY_FLEX_MINOR_VERSION 6
+#define YY_FLEX_SUBMINOR_VERSION 0
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
@@ -159,7 +159,15 @@ typedef void* yyscan_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
 #define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -327,7 +335,7 @@ void vt100_parser_yyfree (void * ,yyscan_t yyscanner );
 
 /* Begin user sect3 */
 
-#define vt100_parser_yywrap(yyscanner) 1
+#define vt100_parser_yywrap(yyscanner) (/*CONSTCOND*/1)
 #define YY_SKIP_YYWRAP
 
 typedef unsigned char YY_CHAR;
@@ -339,6 +347,9 @@ typedef int yy_state_type;
 static yy_state_type yy_get_previous_state (yyscan_t yyscanner );
 static yy_state_type yy_try_NUL_trans (yy_state_type current_state  ,yyscan_t yyscanner);
 static int yy_get_next_buffer (yyscan_t yyscanner );
+#if defined(__GNUC__) && __GNUC__ >= 3
+__attribute__((__noreturn__))
+#endif
 static void yy_fatal_error (yyconst char msg[] ,yyscan_t yyscanner );
 
 /* Done after the current pattern has been matched and before the
@@ -381,7 +392,7 @@ static yyconst flex_int16_t yy_accept[154] =
        50,   50,    0
     } ;
 
-static yyconst flex_int32_t yy_ec[256] =
+static yyconst YY_CHAR yy_ec[256] =
     {   0,
         1,    1,    1,    1,    1,    1,    2,    3,    4,    5,
         6,    7,    8,    1,    9,    1,    1,    1,    1,    1,
@@ -413,7 +424,7 @@ static yyconst flex_int32_t yy_ec[256] =
        56,   56,   56,   56,   56
     } ;
 
-static yyconst flex_int32_t yy_meta[57] =
+static yyconst YY_CHAR yy_meta[57] =
     {   0,
         1,    2,    1,    1,    1,    1,    1,    1,    1,    1,
         3,    3,    3,    3,    3,    4,    4,    4,    4,    4,
@@ -423,7 +434,7 @@ static yyconst flex_int32_t yy_meta[57] =
         3,    7,    8,    8,    8,    7
     } ;
 
-static yyconst flex_int16_t yy_base[173] =
+static yyconst flex_uint16_t yy_base[173] =
     {   0,
         0,   56,  410,  704,  704,  704,  704,  704,  704,  704,
       704,  704,  112,   14,  704,  357,  356,  355,  704,  704,
@@ -469,7 +480,7 @@ static yyconst flex_int16_t yy_def[173] =
       153,  153
     } ;
 
-static yyconst flex_int16_t yy_nxt[761] =
+static yyconst flex_uint16_t yy_nxt[761] =
     {   0,
         4,    5,    6,    7,    8,    9,   10,   11,   12,   13,
        44,   44,   44,   44,   44,   46,   46,   46,   46,   46,
@@ -706,7 +717,7 @@ static void vt100_parser_handle_osc1(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_osc2(VT100Screen *vt, char *buf, size_t len);
 static void vt100_parser_handle_ascii(VT100Screen *vt, char *text, size_t len);
 static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
-#line 710 "src/parser.c"
+#line 721 "src/parser.c"
 
 #define INITIAL 0
 
@@ -775,11 +786,11 @@ void vt100_parser_yyset_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
 
 FILE *vt100_parser_yyget_in (yyscan_t yyscanner );
 
-void vt100_parser_yyset_in  (FILE * in_str ,yyscan_t yyscanner );
+void vt100_parser_yyset_in  (FILE * _in_str ,yyscan_t yyscanner );
 
 FILE *vt100_parser_yyget_out (yyscan_t yyscanner );
 
-void vt100_parser_yyset_out  (FILE * out_str ,yyscan_t yyscanner );
+void vt100_parser_yyset_out  (FILE * _out_str ,yyscan_t yyscanner );
 
 yy_size_t vt100_parser_yyget_leng (yyscan_t yyscanner );
 
@@ -787,11 +798,11 @@ char *vt100_parser_yyget_text (yyscan_t yyscanner );
 
 int vt100_parser_yyget_lineno (yyscan_t yyscanner );
 
-void vt100_parser_yyset_lineno (int line_number ,yyscan_t yyscanner );
+void vt100_parser_yyset_lineno (int _line_number ,yyscan_t yyscanner );
 
 int vt100_parser_yyget_column  (yyscan_t yyscanner );
 
-void vt100_parser_yyset_column (int column_no ,yyscan_t yyscanner );
+void vt100_parser_yyset_column (int _column_no ,yyscan_t yyscanner );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -803,6 +814,10 @@ extern "C" int vt100_parser_yywrap (yyscan_t yyscanner );
 #else
 extern int vt100_parser_yywrap (yyscan_t yyscanner );
 #endif
+#endif
+
+#ifndef YY_NO_UNPUT
+    
 #endif
 
 #ifndef yytext_ptr
@@ -825,7 +840,12 @@ static int input (yyscan_t yyscanner );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
+#else
 #define YY_READ_BUF_SIZE 8192
+#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -912,7 +932,7 @@ extern int vt100_parser_yylex (yyscan_t yyscanner);
 
 /* Code executed at the end of each rule. */
 #ifndef YY_BREAK
-#define YY_BREAK break;
+#define YY_BREAK /*LINTED*/break;
 #endif
 
 #define YY_RULE_SETUP \
@@ -922,9 +942,9 @@ extern int vt100_parser_yylex (yyscan_t yyscanner);
  */
 YY_DECL
 {
-	register yy_state_type yy_current_state;
-	register char *yy_cp, *yy_bp;
-	register int yy_act;
+	yy_state_type yy_current_state;
+	char *yy_cp, *yy_bp;
+	int yy_act;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	if ( !yyg->yy_init )
@@ -957,9 +977,9 @@ YY_DECL
 #line 134 "src/parser.l"
 
 
-#line 961 "src/parser.c"
+#line 981 "src/parser.c"
 
-	while ( 1 )		/* loops until end-of-file is reached */
+	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
 		yy_cp = yyg->yy_c_buf_p;
 
@@ -975,7 +995,7 @@ YY_DECL
 yy_match:
 		do
 			{
-			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)] ;
+			YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)] ;
 			if ( yy_accept[yy_current_state] )
 				{
 				yyg->yy_last_accepting_state = yy_current_state;
@@ -1325,7 +1345,7 @@ YY_RULE_SETUP
 #line 247 "src/parser.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1329 "src/parser.c"
+#line 1349 "src/parser.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1468,9 +1488,9 @@ YY_FATAL_ERROR( "flex scanner jammed" );
 static int yy_get_next_buffer (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-	register char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
-	register char *source = yyg->yytext_ptr;
-	register int number_to_move, i;
+	char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
+	char *source = yyg->yytext_ptr;
+	yy_size_t number_to_move, i;
 	int ret_val;
 
 	if ( yyg->yy_c_buf_p > &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[yyg->yy_n_chars + 1] )
@@ -1499,7 +1519,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	/* Try to read more data. */
 
 	/* First move last chars to start of buffer. */
-	number_to_move = (int) (yyg->yy_c_buf_p - yyg->yytext_ptr) - 1;
+	number_to_move = (yy_size_t) (yyg->yy_c_buf_p - yyg->yytext_ptr) - 1;
 
 	for ( i = 0; i < number_to_move; ++i )
 		*(dest++) = *(source++);
@@ -1602,15 +1622,15 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
     static yy_state_type yy_get_previous_state (yyscan_t yyscanner)
 {
-	register yy_state_type yy_current_state;
-	register char *yy_cp;
+	yy_state_type yy_current_state;
+	char *yy_cp;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	yy_current_state = yyg->yy_start;
 
 	for ( yy_cp = yyg->yytext_ptr + YY_MORE_ADJ; yy_cp < yyg->yy_c_buf_p; ++yy_cp )
 		{
-		register YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
+		YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
 		if ( yy_accept[yy_current_state] )
 			{
 			yyg->yy_last_accepting_state = yy_current_state;
@@ -1635,11 +1655,11 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
  */
     static yy_state_type yy_try_NUL_trans  (yy_state_type yy_current_state , yyscan_t yyscanner)
 {
-	register int yy_is_jam;
+	int yy_is_jam;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner; /* This var may be unused depending upon options. */
-	register char *yy_cp = yyg->yy_c_buf_p;
+	char *yy_cp = yyg->yy_c_buf_p;
 
-	register YY_CHAR yy_c = 1;
+	YY_CHAR yy_c = 1;
 	if ( yy_accept[yy_current_state] )
 		{
 		yyg->yy_last_accepting_state = yy_current_state;
@@ -1657,6 +1677,10 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	(void)yyg;
 	return yy_is_jam ? 0 : yy_current_state;
 }
+
+#ifndef YY_NO_UNPUT
+
+#endif
 
 #ifndef YY_NO_INPUT
 #ifdef __cplusplus
@@ -1811,7 +1835,7 @@ static void vt100_parser_yy_load_buffer_state  (yyscan_t yyscanner)
 	if ( ! b )
 		YY_FATAL_ERROR( "out of dynamic memory in vt100_parser_yy_create_buffer()" );
 
-	b->yy_buf_size = size;
+	b->yy_buf_size = (yy_size_t)size;
 
 	/* yy_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
@@ -1972,7 +1996,7 @@ static void vt100_parser_yyensure_buffer_stack (yyscan_t yyscanner)
 		 * scanner will even need a stack. We use 2 instead of 1 to avoid an
 		 * immediate realloc on the next call.
          */
-		num_to_alloc = 1;
+      num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
 		yyg->yy_buffer_stack = (struct yy_buffer_state**)vt100_parser_yyalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								, yyscanner);
@@ -1989,7 +2013,7 @@ static void vt100_parser_yyensure_buffer_stack (yyscan_t yyscanner)
 	if (yyg->yy_buffer_stack_top >= (yyg->yy_buffer_stack_max) - 1){
 
 		/* Increase the buffer to prepare for a possible push. */
-		int grow_size = 8 /* arbitrary grow size */;
+		yy_size_t grow_size = 8 /* arbitrary grow size */;
 
 		num_to_alloc = yyg->yy_buffer_stack_max + grow_size;
 		yyg->yy_buffer_stack = (struct yy_buffer_state**)vt100_parser_yyrealloc
@@ -2097,7 +2121,9 @@ YY_BUFFER_STATE vt100_parser_yy_scan_bytes  (yyconst char * yybytes, yy_size_t  
 
 static void yy_fatal_error (yyconst char* msg , yyscan_t yyscanner)
 {
-    	(void) fprintf( stderr, "%s\n", msg );
+	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+	(void)yyg;
+	(void) fprintf( stderr, "%s\n", msg );
 	exit( YY_EXIT_FAILURE );
 }
 
@@ -2203,10 +2229,10 @@ void vt100_parser_yyset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
 }
 
 /** Set the current line number.
- * @param line_number
+ * @param _line_number line number
  * @param yyscanner The scanner object.
  */
-void vt100_parser_yyset_lineno (int  line_number , yyscan_t yyscanner)
+void vt100_parser_yyset_lineno (int  _line_number , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
@@ -2214,14 +2240,14 @@ void vt100_parser_yyset_lineno (int  line_number , yyscan_t yyscanner)
         if (! YY_CURRENT_BUFFER )
            YY_FATAL_ERROR( "vt100_parser_yyset_lineno called with no buffer" );
     
-    yylineno = line_number;
+    yylineno = _line_number;
 }
 
 /** Set the current column.
- * @param line_number
+ * @param _column_no column number
  * @param yyscanner The scanner object.
  */
-void vt100_parser_yyset_column (int  column_no , yyscan_t yyscanner)
+void vt100_parser_yyset_column (int  _column_no , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
@@ -2229,25 +2255,25 @@ void vt100_parser_yyset_column (int  column_no , yyscan_t yyscanner)
         if (! YY_CURRENT_BUFFER )
            YY_FATAL_ERROR( "vt100_parser_yyset_column called with no buffer" );
     
-    yycolumn = column_no;
+    yycolumn = _column_no;
 }
 
 /** Set the input stream. This does not discard the current
  * input buffer.
- * @param in_str A readable stream.
+ * @param _in_str A readable stream.
  * @param yyscanner The scanner object.
  * @see vt100_parser_yy_switch_to_buffer
  */
-void vt100_parser_yyset_in (FILE *  in_str , yyscan_t yyscanner)
+void vt100_parser_yyset_in (FILE *  _in_str , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    yyin = in_str ;
+    yyin = _in_str ;
 }
 
-void vt100_parser_yyset_out (FILE *  out_str , yyscan_t yyscanner)
+void vt100_parser_yyset_out (FILE *  _out_str , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    yyout = out_str ;
+    yyout = _out_str ;
 }
 
 int vt100_parser_yyget_debug  (yyscan_t yyscanner)
@@ -2256,10 +2282,10 @@ int vt100_parser_yyget_debug  (yyscan_t yyscanner)
     return yy_flex_debug;
 }
 
-void vt100_parser_yyset_debug (int  bdebug , yyscan_t yyscanner)
+void vt100_parser_yyset_debug (int  _bdebug , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
-    yy_flex_debug = bdebug ;
+    yy_flex_debug = _bdebug ;
 }
 
 /* Accessor methods for yylval and yylloc */
@@ -2398,7 +2424,10 @@ int vt100_parser_yylex_destroy  (yyscan_t yyscanner)
 #ifndef yytext_ptr
 static void yy_flex_strncpy (char* s1, yyconst char * s2, int n , yyscan_t yyscanner)
 {
-	register int i;
+	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+	(void)yyg;
+
+	int i;
 	for ( i = 0; i < n; ++i )
 		s1[i] = s2[i];
 }
@@ -2407,7 +2436,7 @@ static void yy_flex_strncpy (char* s1, yyconst char * s2, int n , yyscan_t yysca
 #ifdef YY_NEED_STRLEN
 static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 {
-	register int n;
+	int n;
 	for ( n = 0; s[n]; ++n )
 		;
 
@@ -2421,18 +2450,36 @@ static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 
 
 
+#ifdef VT100_DEBUG_TRACE
+#define DEBUG_TRACE1(x) do { \
+    fputs(x"\n", stderr); \
+} while (0)
+#define DEBUG_TRACE3(x, x2, x2len) do { \
+    char old = (x2)[(x2len)]; \
+    (x2)[(x2len)] = '\0'; \
+    fprintf(stderr, x" %s\n", (x2)); \
+    (x2)[(x2len)] = old; \
+} while (0)
+#else
+#define DEBUG_TRACE1(x)
+#define DEBUG_TRACE3(x, x2, x2len)
+#endif
+
 static void vt100_parser_handle_bel(VT100Screen *vt)
 {
+    DEBUG_TRACE1("BEL");
     vt100_screen_audible_bell(vt);
 }
 
 static void vt100_parser_handle_bs(VT100Screen *vt)
 {
+    DEBUG_TRACE1("BS");
     vt100_screen_move_to(vt, vt->grid->cur.row, vt->grid->cur.col - 1, 0);
 }
 
 static void vt100_parser_handle_tab(VT100Screen *vt)
 {
+    DEBUG_TRACE1("TAB");
     vt100_screen_move_to(
         vt, vt->grid->cur.row,
         vt->grid->cur.col - (vt->grid->cur.col % 8) + 8, 0);
@@ -2440,31 +2487,37 @@ static void vt100_parser_handle_tab(VT100Screen *vt)
 
 static void vt100_parser_handle_lf(VT100Screen *vt)
 {
+    DEBUG_TRACE1("LF");
     vt100_screen_move_to(vt, vt->grid->cur.row + 1, vt->grid->cur.col, 1);
 }
 
 static void vt100_parser_handle_cr(VT100Screen *vt)
 {
+    DEBUG_TRACE1("CR");
     vt100_screen_move_to(vt, vt->grid->cur.row, 0, 0);
 }
 
 static void vt100_parser_handle_deckpam(VT100Screen *vt)
 {
+    DEBUG_TRACE1("DECKPAM");
     vt100_screen_set_application_keypad(vt);
 }
 
 static void vt100_parser_handle_deckpnm(VT100Screen *vt)
 {
+    DEBUG_TRACE1("DECKPNM");
     vt100_screen_reset_application_keypad(vt);
 }
 
 static void vt100_parser_handle_ri(VT100Screen *vt)
 {
+    DEBUG_TRACE1("RI");
     vt100_screen_move_to(vt, vt->grid->cur.row - 1, vt->grid->cur.col, 1);
 }
 
 static void vt100_parser_handle_ris(VT100Screen *vt)
 {
+    DEBUG_TRACE1("RIS");
     vt100_screen_use_normal_buffer(vt);
     vt100_screen_set_scroll_region(
         vt, 0, vt->grid->max.row - 1, 0, vt->grid->max.col - 1);
@@ -2483,16 +2536,19 @@ static void vt100_parser_handle_ris(VT100Screen *vt)
 
 static void vt100_parser_handle_vb(VT100Screen *vt)
 {
+    DEBUG_TRACE1("VB");
     vt100_screen_visual_bell(vt);
 }
 
 static void vt100_parser_handle_decsc(VT100Screen *vt)
 {
+    DEBUG_TRACE1("DECSC");
     vt100_screen_save_cursor(vt);
 }
 
 static void vt100_parser_handle_decrc(VT100Screen *vt)
 {
+    DEBUG_TRACE1("DECRC");
     vt100_screen_restore_cursor(vt);
 }
 
@@ -2545,6 +2601,7 @@ static void vt100_parser_handle_ich(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("ICH", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_insert_characters(vt, params[0]);
 }
@@ -2553,6 +2610,7 @@ static void vt100_parser_handle_cuu(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("CUU", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(
         vt, vt->grid->cur.row - params[0], vt->grid->cur.col, 0);
@@ -2562,6 +2620,7 @@ static void vt100_parser_handle_cud(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("CUD", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(
         vt, vt->grid->cur.row + params[0], vt->grid->cur.col, 0);
@@ -2571,6 +2630,7 @@ static void vt100_parser_handle_cuf(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("CUF", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(
         vt, vt->grid->cur.row, vt->grid->cur.col + params[0], 0);
@@ -2580,6 +2640,7 @@ static void vt100_parser_handle_cub(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("CUB", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(
         vt, vt->grid->cur.row, vt->grid->cur.col - params[0], 0);
@@ -2589,6 +2650,7 @@ static void vt100_parser_handle_cha(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("CHA", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(vt, vt->grid->cur.row, params[0] - 1, 0);
 }
@@ -2597,6 +2659,7 @@ static void vt100_parser_handle_cup(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 0, 0 }, nparams;
 
+    DEBUG_TRACE3("CUP", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     if (params[0] == 0) {
         params[0] = 1;
@@ -2618,6 +2681,10 @@ static void vt100_parser_handle_ed(VT100Screen *vt, char *buf, size_t len)
     if (*buf == '?') {
         buf++;
         len--;
+        DEBUG_TRACE3("DECSED", buf, len);
+    }
+    else {
+        DEBUG_TRACE3("ED", buf, len);
     }
     vt100_parser_extract_csi_params(buf, len, params, &nparams);
     switch (params[0]) {
@@ -2647,6 +2714,10 @@ static void vt100_parser_handle_el(VT100Screen *vt, char *buf, size_t len)
     if (*buf == '?') {
         buf++;
         len--;
+        DEBUG_TRACE3("DECSEL", buf, len);
+    }
+    else {
+        DEBUG_TRACE3("EL", buf, len);
     }
     vt100_parser_extract_csi_params(buf, len, params, &nparams);
     switch (params[0]) {
@@ -2669,6 +2740,7 @@ static void vt100_parser_handle_il(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("IL", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_insert_lines(vt, params[0]);
 }
@@ -2677,6 +2749,7 @@ static void vt100_parser_handle_dl(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("DL", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_delete_lines(vt, params[0]);
 }
@@ -2685,6 +2758,7 @@ static void vt100_parser_handle_dch(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("DCH", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_delete_characters(vt, params[0]);
 }
@@ -2693,6 +2767,7 @@ static void vt100_parser_handle_su(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("SU", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     if (params[0] == 0) {
         params[0] = 1;
@@ -2704,6 +2779,7 @@ static void vt100_parser_handle_sd(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("SD", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     if (params[0] == 0) {
         params[0] = 1;
@@ -2715,6 +2791,7 @@ static void vt100_parser_handle_ech(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("ECH", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_erase_characters(vt, params[0]);
 }
@@ -2723,6 +2800,7 @@ static void vt100_parser_handle_vpa(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("VPA", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(vt, params[0] - 1, vt->grid->cur.col, 0);
 }
@@ -2732,6 +2810,7 @@ static void vt100_parser_handle_sm(VT100Screen *vt, char *buf, size_t len)
     int params[VT100_PARSER_CSI_MAX_PARAMS], nparams, i;
     char modes[VT100_PARSER_CSI_MAX_PARAMS] = { 0 };
 
+    DEBUG_TRACE3("SM", buf + 2, len - 3);
     vt100_parser_extract_sm_params(buf + 2, len - 3, modes, params, &nparams);
     for (i = 0; i < nparams; ++i) {
         switch (modes[i]) {
@@ -2801,6 +2880,7 @@ static void vt100_parser_handle_rm(VT100Screen *vt, char *buf, size_t len)
     int params[VT100_PARSER_CSI_MAX_PARAMS], nparams, i;
     char modes[VT100_PARSER_CSI_MAX_PARAMS] = { 0 };
 
+    DEBUG_TRACE3("RM", buf + 2, len - 3);
     vt100_parser_extract_sm_params(buf + 2, len - 3, modes, params, &nparams);
     for (i = 0; i < nparams; ++i) {
         switch (modes[i]) {
@@ -2869,6 +2949,7 @@ static void vt100_parser_handle_sgr(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 0 }, nparams, i;
 
+    DEBUG_TRACE3("SGR", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     if (nparams < 1) {
         nparams = 1;
@@ -3020,6 +3101,7 @@ static void vt100_parser_handle_csr(VT100Screen *vt, char *buf, size_t len)
         1, vt->grid->max.row, 1, vt->grid->max.col };
     int nparams;
 
+    DEBUG_TRACE3("CSR", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
 
     vt100_screen_set_scroll_region(
@@ -3042,27 +3124,32 @@ static void vt100_parser_handle_decsel(VT100Screen *vt, char *buf, size_t len)
 
 static void vt100_parser_handle_osc0(VT100Screen *vt, char *buf, size_t len)
 {
+    DEBUG_TRACE3("OSC0", buf + 4, len - 5);
     vt100_screen_set_icon_name(vt, buf + 4, len - 5);
     vt100_screen_set_window_title(vt, buf + 4, len - 5);
 }
 
 static void vt100_parser_handle_osc1(VT100Screen *vt, char *buf, size_t len)
 {
+    DEBUG_TRACE3("OSC1", buf + 4, len - 5);
     vt100_screen_set_icon_name(vt, buf + 4, len - 5);
 }
 
 static void vt100_parser_handle_osc2(VT100Screen *vt, char *buf, size_t len)
 {
+    DEBUG_TRACE3("OSC2", buf + 4, len - 5);
     vt100_screen_set_window_title(vt, buf + 4, len - 5);
 }
 
 static void vt100_parser_handle_ascii(VT100Screen *vt, char *text, size_t len)
 {
+    DEBUG_TRACE3("TEXT", text, len);
     vt100_screen_show_string_ascii(vt, text, len);
 }
 
 static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len)
 {
+    DEBUG_TRACE3("UTF8", text, len);
     vt100_screen_show_string_utf8(vt, text, len);
 }
 

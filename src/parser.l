@@ -246,18 +246,36 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 
 %%
 
+#ifdef VT100_DEBUG_TRACE
+#define DEBUG_TRACE1(x) do { \
+    fputs(x"\n", stderr); \
+} while (0)
+#define DEBUG_TRACE3(x, x2, x2len) do { \
+    char old = (x2)[(x2len)]; \
+    (x2)[(x2len)] = '\0'; \
+    fprintf(stderr, x" %s\n", (x2)); \
+    (x2)[(x2len)] = old; \
+} while (0)
+#else
+#define DEBUG_TRACE1(x)
+#define DEBUG_TRACE3(x, x2, x2len)
+#endif
+
 static void vt100_parser_handle_bel(VT100Screen *vt)
 {
+    DEBUG_TRACE1("BEL");
     vt100_screen_audible_bell(vt);
 }
 
 static void vt100_parser_handle_bs(VT100Screen *vt)
 {
+    DEBUG_TRACE1("BS");
     vt100_screen_move_to(vt, vt->grid->cur.row, vt->grid->cur.col - 1, 0);
 }
 
 static void vt100_parser_handle_tab(VT100Screen *vt)
 {
+    DEBUG_TRACE1("TAB");
     vt100_screen_move_to(
         vt, vt->grid->cur.row,
         vt->grid->cur.col - (vt->grid->cur.col % 8) + 8, 0);
@@ -265,31 +283,37 @@ static void vt100_parser_handle_tab(VT100Screen *vt)
 
 static void vt100_parser_handle_lf(VT100Screen *vt)
 {
+    DEBUG_TRACE1("LF");
     vt100_screen_move_to(vt, vt->grid->cur.row + 1, vt->grid->cur.col, 1);
 }
 
 static void vt100_parser_handle_cr(VT100Screen *vt)
 {
+    DEBUG_TRACE1("CR");
     vt100_screen_move_to(vt, vt->grid->cur.row, 0, 0);
 }
 
 static void vt100_parser_handle_deckpam(VT100Screen *vt)
 {
+    DEBUG_TRACE1("DECKPAM");
     vt100_screen_set_application_keypad(vt);
 }
 
 static void vt100_parser_handle_deckpnm(VT100Screen *vt)
 {
+    DEBUG_TRACE1("DECKPNM");
     vt100_screen_reset_application_keypad(vt);
 }
 
 static void vt100_parser_handle_ri(VT100Screen *vt)
 {
+    DEBUG_TRACE1("RI");
     vt100_screen_move_to(vt, vt->grid->cur.row - 1, vt->grid->cur.col, 1);
 }
 
 static void vt100_parser_handle_ris(VT100Screen *vt)
 {
+    DEBUG_TRACE1("RIS");
     vt100_screen_use_normal_buffer(vt);
     vt100_screen_set_scroll_region(
         vt, 0, vt->grid->max.row - 1, 0, vt->grid->max.col - 1);
@@ -308,16 +332,19 @@ static void vt100_parser_handle_ris(VT100Screen *vt)
 
 static void vt100_parser_handle_vb(VT100Screen *vt)
 {
+    DEBUG_TRACE1("VB");
     vt100_screen_visual_bell(vt);
 }
 
 static void vt100_parser_handle_decsc(VT100Screen *vt)
 {
+    DEBUG_TRACE1("DECSC");
     vt100_screen_save_cursor(vt);
 }
 
 static void vt100_parser_handle_decrc(VT100Screen *vt)
 {
+    DEBUG_TRACE1("DECRC");
     vt100_screen_restore_cursor(vt);
 }
 
@@ -370,6 +397,7 @@ static void vt100_parser_handle_ich(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("ICH", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_insert_characters(vt, params[0]);
 }
@@ -378,6 +406,7 @@ static void vt100_parser_handle_cuu(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("CUU", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(
         vt, vt->grid->cur.row - params[0], vt->grid->cur.col, 0);
@@ -387,6 +416,7 @@ static void vt100_parser_handle_cud(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("CUD", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(
         vt, vt->grid->cur.row + params[0], vt->grid->cur.col, 0);
@@ -396,6 +426,7 @@ static void vt100_parser_handle_cuf(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("CUF", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(
         vt, vt->grid->cur.row, vt->grid->cur.col + params[0], 0);
@@ -405,6 +436,7 @@ static void vt100_parser_handle_cub(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("CUB", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(
         vt, vt->grid->cur.row, vt->grid->cur.col - params[0], 0);
@@ -414,6 +446,7 @@ static void vt100_parser_handle_cha(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("CHA", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(vt, vt->grid->cur.row, params[0] - 1, 0);
 }
@@ -422,6 +455,7 @@ static void vt100_parser_handle_cup(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 0, 0 }, nparams;
 
+    DEBUG_TRACE3("CUP", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     if (params[0] == 0) {
         params[0] = 1;
@@ -443,6 +477,10 @@ static void vt100_parser_handle_ed(VT100Screen *vt, char *buf, size_t len)
     if (*buf == '?') {
         buf++;
         len--;
+        DEBUG_TRACE3("DECSED", buf, len);
+    }
+    else {
+        DEBUG_TRACE3("ED", buf, len);
     }
     vt100_parser_extract_csi_params(buf, len, params, &nparams);
     switch (params[0]) {
@@ -472,6 +510,10 @@ static void vt100_parser_handle_el(VT100Screen *vt, char *buf, size_t len)
     if (*buf == '?') {
         buf++;
         len--;
+        DEBUG_TRACE3("DECSEL", buf, len);
+    }
+    else {
+        DEBUG_TRACE3("EL", buf, len);
     }
     vt100_parser_extract_csi_params(buf, len, params, &nparams);
     switch (params[0]) {
@@ -494,6 +536,7 @@ static void vt100_parser_handle_il(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("IL", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_insert_lines(vt, params[0]);
 }
@@ -502,6 +545,7 @@ static void vt100_parser_handle_dl(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("DL", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_delete_lines(vt, params[0]);
 }
@@ -510,6 +554,7 @@ static void vt100_parser_handle_dch(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("DCH", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_delete_characters(vt, params[0]);
 }
@@ -518,6 +563,7 @@ static void vt100_parser_handle_su(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("SU", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     if (params[0] == 0) {
         params[0] = 1;
@@ -529,6 +575,7 @@ static void vt100_parser_handle_sd(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("SD", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     if (params[0] == 0) {
         params[0] = 1;
@@ -540,6 +587,7 @@ static void vt100_parser_handle_ech(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("ECH", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_erase_characters(vt, params[0]);
 }
@@ -548,6 +596,7 @@ static void vt100_parser_handle_vpa(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 1 }, nparams;
 
+    DEBUG_TRACE3("VPA", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     vt100_screen_move_to(vt, params[0] - 1, vt->grid->cur.col, 0);
 }
@@ -557,6 +606,7 @@ static void vt100_parser_handle_sm(VT100Screen *vt, char *buf, size_t len)
     int params[VT100_PARSER_CSI_MAX_PARAMS], nparams, i;
     char modes[VT100_PARSER_CSI_MAX_PARAMS] = { 0 };
 
+    DEBUG_TRACE3("SM", buf + 2, len - 3);
     vt100_parser_extract_sm_params(buf + 2, len - 3, modes, params, &nparams);
     for (i = 0; i < nparams; ++i) {
         switch (modes[i]) {
@@ -626,6 +676,7 @@ static void vt100_parser_handle_rm(VT100Screen *vt, char *buf, size_t len)
     int params[VT100_PARSER_CSI_MAX_PARAMS], nparams, i;
     char modes[VT100_PARSER_CSI_MAX_PARAMS] = { 0 };
 
+    DEBUG_TRACE3("RM", buf + 2, len - 3);
     vt100_parser_extract_sm_params(buf + 2, len - 3, modes, params, &nparams);
     for (i = 0; i < nparams; ++i) {
         switch (modes[i]) {
@@ -694,6 +745,7 @@ static void vt100_parser_handle_sgr(VT100Screen *vt, char *buf, size_t len)
 {
     int params[VT100_PARSER_CSI_MAX_PARAMS] = { 0 }, nparams, i;
 
+    DEBUG_TRACE3("SGR", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
     if (nparams < 1) {
         nparams = 1;
@@ -845,6 +897,7 @@ static void vt100_parser_handle_csr(VT100Screen *vt, char *buf, size_t len)
         1, vt->grid->max.row, 1, vt->grid->max.col };
     int nparams;
 
+    DEBUG_TRACE3("CSR", buf + 2, len - 3);
     vt100_parser_extract_csi_params(buf + 2, len - 3, params, &nparams);
 
     vt100_screen_set_scroll_region(
@@ -867,27 +920,32 @@ static void vt100_parser_handle_decsel(VT100Screen *vt, char *buf, size_t len)
 
 static void vt100_parser_handle_osc0(VT100Screen *vt, char *buf, size_t len)
 {
+    DEBUG_TRACE3("OSC0", buf + 4, len - 5);
     vt100_screen_set_icon_name(vt, buf + 4, len - 5);
     vt100_screen_set_window_title(vt, buf + 4, len - 5);
 }
 
 static void vt100_parser_handle_osc1(VT100Screen *vt, char *buf, size_t len)
 {
+    DEBUG_TRACE3("OSC1", buf + 4, len - 5);
     vt100_screen_set_icon_name(vt, buf + 4, len - 5);
 }
 
 static void vt100_parser_handle_osc2(VT100Screen *vt, char *buf, size_t len)
 {
+    DEBUG_TRACE3("OSC2", buf + 4, len - 5);
     vt100_screen_set_window_title(vt, buf + 4, len - 5);
 }
 
 static void vt100_parser_handle_ascii(VT100Screen *vt, char *text, size_t len)
 {
+    DEBUG_TRACE3("TEXT", text, len);
     vt100_screen_show_string_ascii(vt, text, len);
 }
 
 static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len)
 {
+    DEBUG_TRACE3("UTF8", text, len);
     vt100_screen_show_string_utf8(vt, text, len);
 }
 
