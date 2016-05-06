@@ -21,7 +21,7 @@ build: $(OUT)
 static: $(SOUT)
 
 $(OUT): $(OBJ)
-	$(CC) $(ALLLDFLAGS) -fPIC -shared -o $@ $^
+	$(CC) -fPIC -shared -o $@ $^ $(ALLLDFLAGS)
 
 $(SOUT): $(OBJ)
 	$(AR) rcs $@ $^
