@@ -6,8 +6,9 @@ OBJ      = $(BUILD)parser.o \
 	   $(BUILD)screen.o \
 	   $(BUILD)unicode-extra.o
 LIBS     = glib-2.0
-CFLAGS  ?= -g -Wall -Wextra -Werror
-LDFLAGS ?= -g -Wall -Wextra -Werror
+OPT     ?= -g
+CFLAGS  ?= $(OPT) -Wall -Wextra -Werror
+LDFLAGS ?= $(OPT) -Wall -Wextra -Werror
 
 ALLCFLAGS  = $(shell pkg-config --cflags $(LIBS)) $(CFLAGS)
 ALLLDFLAGS = $(shell pkg-config --libs $(LIBS)) $(LDFLAGS)
