@@ -1,6 +1,7 @@
 #ifndef _VT100_SCREEN_H
 #define _VT100_SCREEN_H
 
+#include <stddef.h>
 #include <stdint.h>
 
 enum VT100ColorType {
