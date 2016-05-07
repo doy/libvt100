@@ -159,8 +159,7 @@ void vt100_screen_show_string_ascii(VT100Screen *vt, char *buf, size_t len)
             cell = vt100_screen_cell_at(
                 vt, vt->grid->cur.row, vt->grid->cur.col - 1);
             if (cell->is_wide) {
-                cell->len = 1;
-                cell->contents[0] = ' ';
+                cell->len = 0;
             }
         }
     }
@@ -196,8 +195,7 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
             cell = vt100_screen_cell_at(
                 vt, vt->grid->cur.row, vt->grid->cur.col - 1);
             if (cell->is_wide) {
-                cell->len = 1;
-                cell->contents[0] = ' ';
+                cell->len = 0;
             }
         }
     }
