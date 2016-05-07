@@ -20,6 +20,7 @@ static void vt100_screen_push_string(char **strp, size_t *lenp,
 static void vt100_screen_ensure_capacity(VT100Screen *vt, int size);
 static struct vt100_row *vt100_screen_row_at(VT100Screen *vt, int row);
 static int vt100_screen_scroll_region_is_active(VT100Screen *vt);
+static void vt100_screen_check_wrap(VT100Screen *vt, int is_wide);
 
 VT100Screen *vt100_screen_new(int rows, int cols)
 {
@@ -167,18 +168,15 @@ void vt100_screen_show_string_ascii(VT100Screen *vt, char *buf, size_t len)
     for (i = 0; i < len; ++i) {
         struct vt100_cell *cell;
 
-        if (vt->grid->cur.col >= vt->grid->max.col) {
-            vt100_screen_row_at(vt, vt->grid->cur.row)->wrapped = 1;
-            vt100_screen_move_down_or_scroll(vt);
-            vt->grid->cur.col = 0;
-        }
+        vt100_screen_check_wrap(vt, 0);
         cell = vt100_screen_cell_at(vt, vt->grid->cur.row, vt->grid->cur.col);
-        vt->grid->cur.col++;
 
         cell->len = 1;
         cell->contents[0] = buf[i];
         cell->attrs = vt->attrs;
         cell->is_wide = 0;
+
+        vt->grid->cur.col++;
     }
 }
 
@@ -241,18 +239,14 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
             }
         }
         else {
-            if (vt->grid->cur.col + (is_wide ? 2 : 1) > vt->grid->max.col) {
-                vt100_screen_row_at(vt, vt->grid->cur.row)->wrapped = 1;
-                vt100_screen_move_down_or_scroll(vt);
-                vt->grid->cur.col = 0;
-            }
+            vt100_screen_check_wrap(vt, is_wide);
             cell = vt100_screen_cell_at(
                 vt, vt->grid->cur.row, vt->grid->cur.col);
-            cell->is_wide = is_wide;
 
             cell->len = next - c;
             memcpy(cell->contents, c, cell->len);
             cell->attrs = vt->attrs;
+            cell->is_wide = is_wide;
 
             vt->grid->cur.col += is_wide ? 2 : 1;
         }
@@ -1085,4 +1079,13 @@ static int vt100_screen_scroll_region_is_active(VT100Screen *vt)
 {
     return vt->grid->scroll_top != 0
         || vt->grid->scroll_bottom != vt->grid->max.row - 1;
+}
+
+static void vt100_screen_check_wrap(VT100Screen *vt, int is_wide)
+{
+    if (vt->grid->cur.col + (is_wide ? 2 : 1) > vt->grid->max.col) {
+        vt100_screen_row_at(vt, vt->grid->cur.row)->wrapped = 1;
+        vt100_screen_move_down_or_scroll(vt);
+        vt->grid->cur.col = 0;
+    }
 }
