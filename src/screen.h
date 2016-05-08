@@ -73,7 +73,6 @@ struct vt100_grid {
     struct vt100_row *rows;
 };
 
-struct vt100_parser_state;
 struct vt100_screen {
     struct vt100_grid *grid;
     struct vt100_grid *alternate;
@@ -86,8 +85,6 @@ struct vt100_screen {
     struct vt100_cell_attrs attrs;
 
     int scrollback_length;
-
-    struct vt100_parser_state *parser_state;
 
     unsigned char hide_cursor: 1;
     unsigned char application_keypad: 1;

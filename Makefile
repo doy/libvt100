@@ -34,11 +34,8 @@ $(BUILD)%.o: $(SRC)%.c
 
 $(SRC)screen.c: $(SRC)parser.h
 
-$(SRC)%.c: $(SRC)%.l
-	$(LEX) -o $@ $<
-
-$(SRC)%.h: $(SRC)%.l
-	$(LEX) --header-file=$(<:.l=.h) -o /dev/null $<
+$(SRC)%.c: $(SRC)%.re
+	re2c -o $@ $<
 
 clean:
 	rm -f $(OUT) $(SOUT) $(OBJ) $(OBJ:$(BUILD)%.o=$(BUILD).%.d)

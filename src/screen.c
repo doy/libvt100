@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -5,11 +6,6 @@
 
 #include "vt100.h"
 #include "parser.h"
-
-struct vt100_parser_state {
-    yyscan_t scanner;
-    YY_BUFFER_STATE state;
-};
 
 static void vt100_screen_get_string(
     VT100Screen *vt, struct vt100_loc *start, struct vt100_loc *end,
@@ -36,8 +32,6 @@ VT100Screen *vt100_screen_new(int rows, int cols)
 void vt100_screen_init(VT100Screen *vt)
 {
     vt->grid = calloc(1, sizeof(struct vt100_grid));
-    vt->parser_state = calloc(1, sizeof(struct vt100_parser_state));
-    vt100_parser_yylex_init_extra(vt, &vt->parser_state->scanner);
 }
 
 void vt100_screen_set_window_size(VT100Screen *vt, int rows, int cols)
@@ -109,12 +103,9 @@ void vt100_screen_set_scrollback_length(VT100Screen *vt, int rows)
 
 int vt100_screen_process_string(VT100Screen *vt, char *buf, size_t len)
 {
-    struct vt100_parser_state *state = vt->parser_state;
     int remaining;
 
-    state->state = vt100_parser_yy_scan_bytes(buf, len, state->scanner);
-    remaining = vt100_parser_yylex(state->scanner);
-    vt100_parser_yy_delete_buffer(state->state, state->scanner);
+    remaining = vt100_parser_yylex(vt, (uint8_t*)buf, len);
     return len - remaining;
 }
 
@@ -882,9 +873,6 @@ void vt100_screen_cleanup(VT100Screen *vt)
 
     free(vt->title);
     free(vt->icon_name);
-
-    vt100_parser_yylex_destroy(vt->parser_state->scanner);
-    free(vt->parser_state);
 }
 
 void vt100_screen_delete(VT100Screen *vt)
