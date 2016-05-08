@@ -151,17 +151,13 @@ void vt100_screen_show_string_ascii(VT100Screen *vt, char *buf, size_t len)
 {
     size_t i;
 
-    if (len) {
-        vt->dirty = 1;
+    if (len && vt->grid->cur.col > 0) {
+        struct vt100_cell *cell;
 
-        if (vt->grid->cur.col > 0) {
-            struct vt100_cell *cell;
-
-            cell = vt100_screen_cell_at(
-                vt, vt->grid->cur.row, vt->grid->cur.col - 1);
-            if (cell->is_wide) {
-                cell->len = 0;
-            }
+        cell = vt100_screen_cell_at(
+            vt, vt->grid->cur.row, vt->grid->cur.col - 1);
+        if (cell->is_wide) {
+            cell->len = 0;
         }
     }
 
@@ -175,6 +171,7 @@ void vt100_screen_show_string_ascii(VT100Screen *vt, char *buf, size_t len)
         cell->contents[0] = buf[i];
         cell->attrs = vt->attrs;
         cell->is_wide = 0;
+        cell->dirty = 1;
 
         vt->grid->cur.col++;
     }
@@ -184,17 +181,13 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
 {
     char *c = buf, *next;
 
-    if (len) {
-        vt->dirty = 1;
+    if (len && vt->grid->cur.col > 0) {
+        struct vt100_cell *cell;
 
-        if (vt->grid->cur.col > 0) {
-            struct vt100_cell *cell;
-
-            cell = vt100_screen_cell_at(
-                vt, vt->grid->cur.row, vt->grid->cur.col - 1);
-            if (cell->is_wide) {
-                cell->len = 0;
-            }
+        cell = vt100_screen_cell_at(
+            vt, vt->grid->cur.row, vt->grid->cur.col - 1);
+        if (cell->is_wide) {
+            cell->len = 0;
         }
     }
 
@@ -247,6 +240,7 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
             memcpy(cell->contents, c, cell->len);
             cell->attrs = vt->attrs;
             cell->is_wide = is_wide;
+            cell->dirty = 1;
 
             vt->grid->cur.col += is_wide ? 2 : 1;
         }
@@ -296,13 +290,13 @@ void vt100_screen_clear_screen_forward(VT100Screen *vt)
         &row->cells[vt->grid->cur.col], 0,
         (vt->grid->max.col - vt->grid->cur.col) * sizeof(struct vt100_cell));
     row->wrapped = 0;
+    row->dirty = 1;
     for (r = vt->grid->cur.row + 1; r < vt->grid->max.row; ++r) {
         row = vt100_screen_row_at(vt, r);
         memset(row->cells, 0, vt->grid->max.col * sizeof(struct vt100_cell));
         row->wrapped = 0;
+        row->dirty = 1;
     }
-
-    vt->dirty = 1;
 }
 
 void vt100_screen_clear_screen_backward(VT100Screen *vt)
@@ -314,11 +308,11 @@ void vt100_screen_clear_screen_backward(VT100Screen *vt)
         row = vt100_screen_row_at(vt, r);
         memset(row->cells, 0, vt->grid->max.col * sizeof(struct vt100_cell));
         row->wrapped = 0;
+        row->dirty = 1;
     }
     row = vt100_screen_row_at(vt, vt->grid->cur.row);
     memset(row->cells, 0, vt->grid->cur.col * sizeof(struct vt100_cell));
-
-    vt->dirty = 1;
+    row->dirty = 1;
 }
 
 void vt100_screen_kill_line(VT100Screen *vt)
@@ -328,8 +322,7 @@ void vt100_screen_kill_line(VT100Screen *vt)
     row = vt100_screen_row_at(vt, vt->grid->cur.row);
     memset(row->cells, 0, vt->grid->max.col * sizeof(struct vt100_cell));
     row->wrapped = 0;
-
-    vt->dirty = 1;
+    row->dirty = 1;
 }
 
 void vt100_screen_kill_line_forward(VT100Screen *vt)
@@ -341,8 +334,7 @@ void vt100_screen_kill_line_forward(VT100Screen *vt)
         &row->cells[vt->grid->cur.col], 0,
         (vt->grid->max.col - vt->grid->cur.col) * sizeof(struct vt100_cell));
     row->wrapped = 0;
-
-    vt->dirty = 1;
+    row->dirty = 1;
 }
 
 void vt100_screen_kill_line_backward(VT100Screen *vt)
@@ -351,12 +343,11 @@ void vt100_screen_kill_line_backward(VT100Screen *vt)
 
     row = vt100_screen_row_at(vt, vt->grid->cur.row);
     memset(row->cells, 0, vt->grid->cur.col * sizeof(struct vt100_cell));
+    row->dirty = 1;
     if (vt->grid->cur.row > 0) {
         row = vt100_screen_row_at(vt, vt->grid->cur.row - 1);
         row->wrapped = 0;
     }
-
-    vt->dirty = 1;
 }
 
 void vt100_screen_insert_characters(VT100Screen *vt, int count)
@@ -378,7 +369,7 @@ void vt100_screen_insert_characters(VT100Screen *vt, int count)
         row->wrapped = 0;
     }
 
-    vt->dirty = 1;
+    row->dirty = 1;
 }
 
 void vt100_screen_insert_lines(VT100Screen *vt, int count)
@@ -406,9 +397,9 @@ void vt100_screen_insert_lines(VT100Screen *vt, int count)
             row->cells = calloc(vt->grid->max.col, sizeof(struct vt100_cell));
             row->wrapped = 0;
         }
-    }
 
-    vt->dirty = 1;
+        vt->dirty = 1; /* XXX should be able to set individual rows */
+    }
 }
 
 void vt100_screen_delete_characters(VT100Screen *vt, int count)
@@ -428,9 +419,8 @@ void vt100_screen_delete_characters(VT100Screen *vt, int count)
             &row->cells[vt->grid->max.col - count], 0,
             count * sizeof(struct vt100_cell));
         row->wrapped = 0;
+        row->dirty = 1;
     }
-
-    vt->dirty = 1;
 }
 
 void vt100_screen_delete_lines(VT100Screen *vt, int count)
@@ -459,9 +449,9 @@ void vt100_screen_delete_lines(VT100Screen *vt, int count)
             row->cells = calloc(vt->grid->max.col, sizeof(struct vt100_cell));
             row->wrapped = 0;
         }
-    }
 
-    vt->dirty = 1;
+        vt->dirty = 1; /* XXX should be able to mark individual rows */
+    }
 }
 
 void vt100_screen_erase_characters(VT100Screen *vt, int count)
@@ -480,9 +470,9 @@ void vt100_screen_erase_characters(VT100Screen *vt, int count)
 
             cell->len = 0;
         }
-    }
 
-    vt->dirty = 1;
+        row->dirty = 1;
+    }
 }
 
 void vt100_screen_scroll_down(VT100Screen *vt, int count)
@@ -505,6 +495,8 @@ void vt100_screen_scroll_down(VT100Screen *vt, int count)
             row->cells = calloc(vt->grid->max.col, sizeof(struct vt100_cell));
             row->wrapped = 0;
         }
+
+        vt->dirty = 1; /* XXX can do better here */
     }
     else {
         for (i = 0; i < bottom - top + 1; ++i) {
@@ -512,10 +504,9 @@ void vt100_screen_scroll_down(VT100Screen *vt, int count)
             memset(
                 row->cells, 0, vt->grid->max.col * sizeof(struct vt100_cell));
             row->wrapped = 0;
+            row->dirty = 1;
         }
     }
-
-    vt->dirty = 1;
 }
 
 void vt100_screen_scroll_up(VT100Screen *vt, int count)
@@ -584,7 +575,7 @@ void vt100_screen_scroll_up(VT100Screen *vt, int count)
         }
     }
 
-    vt->dirty = 1;
+    vt->dirty = 1; /* XXX can do better here */
 }
 
 void vt100_screen_move_down_or_scroll(VT100Screen *vt)

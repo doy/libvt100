@@ -51,11 +51,13 @@ struct vt100_cell {
     size_t len;
     struct vt100_cell_attrs attrs;
     unsigned char is_wide: 1;
+    unsigned char dirty: 1;
 };
 
 struct vt100_row {
     struct vt100_cell *cells;
     unsigned char wrapped: 1;
+    unsigned char dirty: 1;
 };
 
 struct vt100_grid {
