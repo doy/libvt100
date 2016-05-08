@@ -10,6 +10,9 @@ OPT     ?= -g
 CFLAGS  ?= $(OPT) -Wall -Wextra -Werror
 LDFLAGS ?= $(OPT) -Wall -Wextra -Werror
 
+RE2C      ?= re2c
+RE2CFLAGS ?= -s --no-generation-date
+
 ALLCFLAGS  = $(shell pkg-config --cflags $(LIBS)) $(CFLAGS)
 ALLLDFLAGS = $(shell pkg-config --libs $(LIBS)) $(LDFLAGS)
 
@@ -35,7 +38,7 @@ $(BUILD)%.o: $(SRC)%.c
 $(SRC)screen.c: $(SRC)parser.h
 
 $(SRC)%.c: $(SRC)%.re
-	re2c -o $@ $<
+	$(RE2C) $(RE2CFLAGS) -o $@ $<
 
 clean:
 	rm -f $(OUT) $(SOUT) $(OBJ) $(OBJ:$(BUILD)%.o=$(BUILD).%.d)
