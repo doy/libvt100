@@ -1,0 +1,7 @@
+---
+sudo: false
+language: c
+compiler:
+    - gcc
+    - clang
+script: make
