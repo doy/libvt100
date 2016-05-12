@@ -75,14 +75,14 @@ int vt100_is_wide_char(uint32_t codepoint)
 static int vt100_is_wide_emoji(uint32_t codepoint)
 {
     static size_t ranges = sizeof(vt100_wide_emoji) / sizeof(struct vt100_char_range);
-    ssize_t low = 0, high = ranges - 1;
+    size_t low = 0, high = ranges - 1;
 
     if (codepoint < vt100_wide_emoji[0].start) {
         return 0;
     }
 
     do {
-        ssize_t cur = (high + low) / 2;
+        size_t cur = (high + low) / 2;
         struct vt100_char_range range = vt100_wide_emoji[cur];
 
         if (codepoint < range.start) {
