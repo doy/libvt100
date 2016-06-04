@@ -2,6 +2,8 @@ OUT      = libvt100.so
 SOUT     = libvt100.a
 BUILD    = build/
 SRC      = src/
+EXDIR    = examples/
+EXAMPLES = $(EXDIR)test1
 OBJ      = $(BUILD)parser.o \
 	   $(BUILD)screen.o \
 	   $(BUILD)unicode-extra.o
@@ -28,6 +30,8 @@ dynamic: $(OUT) ## Build a dynamic library
 
 static: $(SOUT) ## Build a static library
 
+examples: $(EXAMPLES) ## Build the example programs
+
 $(OUT): $(OBJ)
 	$(QUIET_LD)$(CC) -fPIC -shared -o $@ $^ $(ALLLDFLAGS)
 
@@ -37,6 +41,9 @@ $(SOUT): $(OBJ)
 $(BUILD)%.o: $(SRC)%.c | $(BUILD)
 	@$(MAKEDEPEND) -o $(<:$(SRC)%.c=$(BUILD).%.d) $<
 	$(QUIET_CC)$(CC) $(ALLCFLAGS) -c -fPIC -o $@ $<
+
+$(EXDIR)%: $(EXDIR)%.c $(SOUT)
+	$(QUIET_CC)$(CC) $(ALLCFLAGS) $(ALLLDFLAGS) -I src -o $@ $^
 
 $(BUILD):
 	@mkdir -p $(BUILD)
@@ -50,7 +57,7 @@ $(SRC)%.h: $(SRC)%.l
 	$(QUIET_LEX)$(LEX) --header-file=$(<:.l=.h) -o /dev/null $<
 
 clean: ## Remove build files
-	rm -f $(OUT) $(SOUT) $(OBJ) $(OBJ:$(BUILD)%.o=$(BUILD).%.d)
+	rm -f $(OUT) $(SOUT) $(OBJ) $(OBJ:$(BUILD)%.o=$(BUILD).%.d) $(EXAMPLES)
 	@rmdir -p $(BUILD) > /dev/null 2>&1 || true
 
 help: ## Display this help

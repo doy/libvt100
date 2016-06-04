@@ -4,12 +4,17 @@
 
 #include "vt100.h"
 
+#define UNUSED(x) ((void)x)
+
 int main(int argc, char *argv[])
 {
     VT100Screen *vt;
     char buf[4096];
     size_t offset = 0;
     int i, j, skip;
+
+    UNUSED(argc);
+    UNUSED(argv);
 
     vt = vt100_screen_new(24, 80);
     // vt100_screen_set_window_size(vt);
@@ -36,7 +41,7 @@ int main(int argc, char *argv[])
                 continue;
             }
             struct vt100_cell *cell = &vt->grid->rows[i].cells[j];
-            printf("%*s", cell->len, cell->contents);
+            printf("%*s", (int)cell->len, cell->contents);
             if (cell->is_wide)
                 skip = 1;
         }
