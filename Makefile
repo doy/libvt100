@@ -22,11 +22,11 @@ QUIET_AR  = @echo "  AR  $@";
 QUIET_LEX = @echo "  LEX $@";
 endif
 
-all: $(OUT) $(SOUT)
+all: $(OUT) $(SOUT) ## Build both static and dynamic libraries
 
-build: $(OUT)
+build: $(OUT) ## Build a dynamic library
 
-static: $(SOUT)
+static: $(SOUT) ## Build a static library
 
 $(OUT): $(OBJ)
 	$(QUIET_LD)$(CC) -fPIC -shared -o $@ $^ $(ALLLDFLAGS)
@@ -49,9 +49,12 @@ $(SRC)%.c: $(SRC)%.l
 $(SRC)%.h: $(SRC)%.l
 	$(QUIET_LEX)$(LEX) --header-file=$(<:.l=.h) -o /dev/null $<
 
-clean:
+clean: ## Remove build files
 	rm -f $(OUT) $(SOUT) $(OBJ) $(OBJ:$(BUILD)%.o=$(BUILD).%.d)
 	@rmdir -p $(BUILD) > /dev/null 2>&1 || true
+
+help: ## Display this help
+	@grep -HE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":|##"}; {printf "\033[36m%-20s\033[0m %s\n", $$2, $$4}'
 
 -include $(OBJ:$(BUILD)%.o=$(BUILD).%.d)
 
