@@ -1236,41 +1236,42 @@ case 43:
 case 44:
 YY_RULE_SETUP
 #line 184 "src/parser.l"
-/* ignored */
+/* ignored - not interested in implementing character sets, unicode
+             should be sufficient */
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 186 "src/parser.l"
+#line 187 "src/parser.l"
 vt100_parser_handle_ascii(yyextra, yytext, yyleng);
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 187 "src/parser.l"
+#line 188 "src/parser.l"
 vt100_parser_handle_text(yyextra, yytext, yyleng);
 	YY_BREAK
 case 47:
-#line 190 "src/parser.l"
-case 48:
 #line 191 "src/parser.l"
-case 49:
+case 48:
 #line 192 "src/parser.l"
-case 50:
+case 49:
 #line 193 "src/parser.l"
-case 51:
+case 50:
 #line 194 "src/parser.l"
+case 51:
+#line 195 "src/parser.l"
 case 52:
 YY_RULE_SETUP
-#line 194 "src/parser.l"
+#line 195 "src/parser.l"
 return yyleng;
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 196 "src/parser.l"
+#line 197 "src/parser.l"
 return 0;
 	YY_BREAK
 case 53:
 /* rule 53 can match eol */
 YY_RULE_SETUP
-#line 198 "src/parser.l"
+#line 199 "src/parser.l"
 {
     fprintf(stderr,
         "unhandled CSI sequence: \\033%s\\%03hho\n",
@@ -1279,14 +1280,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 204 "src/parser.l"
+#line 205 "src/parser.l"
 {
     fprintf(stderr, "unhandled CSI sequence: \\033%s\n", yytext + 1);
 }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 208 "src/parser.l"
+#line 209 "src/parser.l"
 {
     if (!strncmp(yytext, "\e]50;", 5)) { // osx terminal.app private stuff
         // not interested in non-portable extensions
@@ -1305,20 +1306,18 @@ YY_RULE_SETUP
 case 56:
 /* rule 56 can match eol */
 YY_RULE_SETUP
-#line 223 "src/parser.l"
+#line 224 "src/parser.l"
 {
     fprintf(stderr, "unhandled escape sequence: \\%03hho\n", yytext[1]);
 }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 227 "src/parser.l"
+#line 228 "src/parser.l"
 {
     switch (yytext[1]) {
-    case '(': // character sets
-        // not interested in implementing character sets, unicode should be
-        // sufficient
-        break;
+    case '(': // character sets - there should be some trailing bytes
+        return yyleng;
     default:
         fprintf(stderr, "unhandled escape sequence: %s\n", yytext + 1);
         break;
@@ -1328,24 +1327,24 @@ YY_RULE_SETUP
 case 58:
 /* rule 58 can match eol */
 YY_RULE_SETUP
-#line 239 "src/parser.l"
+#line 238 "src/parser.l"
 {
     fprintf(stderr, "unhandled control character: \\%03hho\n", yytext[0]);
 }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 243 "src/parser.l"
+#line 242 "src/parser.l"
 {
     fprintf(stderr, "invalid utf8 byte: \\%03hho\n", yytext[0]);
 }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 247 "src/parser.l"
+#line 246 "src/parser.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1349 "src/parser.c"
+#line 1348 "src/parser.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2446,7 +2445,7 @@ static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 247 "src/parser.l"
+#line 246 "src/parser.l"
 
 
 

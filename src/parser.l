@@ -181,7 +181,8 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 {GZD4}    |
 {G1D4}    |
 {G2D4}    |
-{G3D4}    /* ignored */
+{G3D4}    /* ignored - not interested in implementing character sets, unicode
+             should be sufficient */
 
 {ASCII}+  vt100_parser_handle_ascii(yyextra, yytext, yyleng);
 {CHAR}+   vt100_parser_handle_text(yyextra, yytext, yyleng);
@@ -226,10 +227,8 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 
 {ESC}{CHAR} {
     switch (yytext[1]) {
-    case '(': // character sets
-        // not interested in implementing character sets, unicode should be
-        // sufficient
-        break;
+    case '(': // character sets - there should be some trailing bytes
+        return yyleng;
     default:
         fprintf(stderr, "unhandled escape sequence: %s\n", yytext + 1);
         break;
