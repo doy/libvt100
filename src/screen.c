@@ -996,7 +996,7 @@ static void vt100_screen_get_string(
                 if (attrs.inverse != cell->attrs.inverse) {
                     attr_codes[5] = cell->attrs.inverse ? 7 : 27;
                 }
-                vt100_screen_push_string(strp, lenp, &capacity, "\e[", 2);
+                vt100_screen_push_string(strp, lenp, &capacity, "\033[", 2);
                 for (i = 0; i < sizeof(attr_codes) / sizeof(int); ++i) {
                     char buf[3];
 

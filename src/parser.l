@@ -214,10 +214,10 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 }
 
 {OSC}{CHAR}*{ST} {
-    if (!strncmp(yytext, "\e]50;", 5)) { // osx terminal.app private stuff
+    if (!strncmp(yytext, "\033]50;", 5)) { // osx terminal.app private stuff
         // not interested in non-portable extensions
     }
-    else if (!strncmp(yytext, "\e]499;", 5)) { // termcast private metadata
+    else if (!strncmp(yytext, "\033]499;", 5)) { // termcast private metadata
         // this isn't intended to be interpreted
     }
     else {
