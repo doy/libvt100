@@ -8,7 +8,7 @@ OBJ      = $(BUILD)parser.o \
 LIBS     = glib-2.0
 OPT     ?= -g
 CFLAGS  ?= $(OPT) -Wall -Wextra -Werror -pedantic -std=c1x -D_XOPEN_SOURCE=600
-LDFLAGS ?= $(OPT) -Wall -Wextra -Werror -pedantic -std=c1x -D_XOPEN_SOURCE=600
+LDFLAGS ?= $(OPT)
 
 ALLCFLAGS  = $(shell pkg-config --cflags $(LIBS)) $(CFLAGS)
 ALLLDFLAGS = $(shell pkg-config --libs $(LIBS)) $(LDFLAGS)
