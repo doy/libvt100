@@ -46,6 +46,7 @@ DECSC   {ESC}7
 DECRC   {ESC}8
 
 DECCSI     {CSI}\?
+STATUSCSI  {CSI}>
 CSIPARAM1  ([0-9]+)?
 CSIPARAM2  ([0-9]+(;[0-9]+)?)?
 CSIPARAM24 ([0-9]+(;[0-9]+){1,3})?
@@ -84,6 +85,9 @@ GZD4 {ESC}\([\040-\057]*[\060-\176]
 G1D4 {ESC}\)[\040-\057]*[\060-\176]
 G2D4 {ESC}\*[\040-\057]*[\060-\176]
 G3D4 {ESC}\+[\040-\057]*[\060-\176]
+
+DA  {STATUSCSI}{CSIPARAM1}c
+DSR {CSI}{CSIPARAM1}n
 
 %{
 static void vt100_parser_handle_bel(VT100Screen *vt);
@@ -183,6 +187,9 @@ static void vt100_parser_handle_text(VT100Screen *vt, char *text, size_t len);
 {G2D4}    |
 {G3D4}    /* ignored - not interested in implementing character sets, unicode
              should be sufficient */
+
+{DA}      |
+{DSR}     /* ignored - not interested in escapes that generate responses */
 
 {ASCII}+  vt100_parser_handle_ascii(yyextra, yytext, yyleng);
 {CHAR}+   vt100_parser_handle_text(yyextra, yytext, yyleng);
