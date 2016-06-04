@@ -37,10 +37,10 @@ struct vt100_cell_attrs {
     struct vt100_color bgcolor;
     union {
         struct {
-            unsigned char bold: 1;
-            unsigned char italic: 1;
-            unsigned char underline: 1;
-            unsigned char inverse: 1;
+            unsigned int bold: 1;
+            unsigned int italic: 1;
+            unsigned int underline: 1;
+            unsigned int inverse: 1;
         };
         unsigned char attrs;
     };
@@ -50,12 +50,12 @@ struct vt100_cell {
     char contents[8];
     size_t len;
     struct vt100_cell_attrs attrs;
-    unsigned char is_wide: 1;
+    unsigned int is_wide: 1;
 };
 
 struct vt100_row {
     struct vt100_cell *cells;
-    unsigned char wrapped: 1;
+    unsigned int wrapped: 1;
 };
 
 struct vt100_grid {
@@ -89,22 +89,22 @@ struct vt100_screen {
 
     struct vt100_parser_state *parser_state;
 
-    unsigned char hide_cursor: 1;
-    unsigned char application_keypad: 1;
-    unsigned char application_cursor: 1;
-    unsigned char mouse_reporting_press: 1;
-    unsigned char mouse_reporting_press_release: 1;
-    unsigned char mouse_reporting_button_motion: 1;
-    unsigned char mouse_reporting_sgr_mode: 1;
-    unsigned char bracketed_paste: 1;
+    unsigned int hide_cursor: 1;
+    unsigned int application_keypad: 1;
+    unsigned int application_cursor: 1;
+    unsigned int mouse_reporting_press: 1;
+    unsigned int mouse_reporting_press_release: 1;
+    unsigned int mouse_reporting_button_motion: 1;
+    unsigned int mouse_reporting_sgr_mode: 1;
+    unsigned int bracketed_paste: 1;
 
-    unsigned char visual_bell: 1;
-    unsigned char audible_bell: 1;
-    unsigned char update_title: 1;
-    unsigned char update_icon_name: 1;
+    unsigned int visual_bell: 1;
+    unsigned int audible_bell: 1;
+    unsigned int update_title: 1;
+    unsigned int update_icon_name: 1;
 
-    unsigned char dirty: 1;
-    unsigned char custom_scrollback_length: 1;
+    unsigned int dirty: 1;
+    unsigned int custom_scrollback_length: 1;
 };
 
 VT100Screen *vt100_screen_new(int rows, int cols);
