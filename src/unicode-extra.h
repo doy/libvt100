@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-int vt100_is_wide_char(uint32_t codepoint);
+int vt100_char_width(uint32_t codepoint);
 
 #endif

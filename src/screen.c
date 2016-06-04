@@ -20,7 +20,7 @@ static void vt100_screen_push_string(char **strp, size_t *lenp,
 static void vt100_screen_ensure_capacity(VT100Screen *vt, int size);
 static struct vt100_row *vt100_screen_row_at(VT100Screen *vt, int row);
 static int vt100_screen_scroll_region_is_active(VT100Screen *vt);
-static void vt100_screen_check_wrap(VT100Screen *vt, int is_wide);
+static void vt100_screen_check_wrap(VT100Screen *vt, int width);
 
 VT100Screen *vt100_screen_new(int rows, int cols)
 {
@@ -168,7 +168,7 @@ void vt100_screen_show_string_ascii(VT100Screen *vt, char *buf, size_t len)
     for (i = 0; i < len; ++i) {
         struct vt100_cell *cell;
 
-        vt100_screen_check_wrap(vt, 0);
+        vt100_screen_check_wrap(vt, 1);
         cell = vt100_screen_cell_at(vt, vt->grid->cur.row, vt->grid->cur.col);
 
         cell->len = 1;
@@ -201,18 +201,12 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
     while ((next = g_utf8_next_char(c))) {
         gunichar uc;
         struct vt100_cell *cell = NULL;
-        int is_wide, is_combining;
-        GUnicodeType ctype;
+        int width;
 
         uc = g_utf8_get_char(c);
-        /* XXX handle zero width characters */
-        is_wide = vt100_is_wide_char(uc);
-        ctype = g_unichar_type(uc);
-        /* XXX should this also include spacing marks? */
-        is_combining = ctype == G_UNICODE_ENCLOSING_MARK
-                    || ctype == G_UNICODE_NON_SPACING_MARK;
+        width = vt100_char_width(uc);
 
-        if (is_combining) {
+        if (width == 0) {
             if (vt->grid->cur.col > 0) {
                 cell = vt100_screen_cell_at(
                     vt, vt->grid->cur.row, vt->grid->cur.col - 1);
@@ -239,16 +233,16 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
             }
         }
         else {
-            vt100_screen_check_wrap(vt, is_wide);
+            vt100_screen_check_wrap(vt, width);
             cell = vt100_screen_cell_at(
                 vt, vt->grid->cur.row, vt->grid->cur.col);
 
             cell->len = next - c;
             memcpy(cell->contents, c, cell->len);
             cell->attrs = vt->attrs;
-            cell->is_wide = is_wide;
+            cell->is_wide = width == 2;
 
-            vt->grid->cur.col += is_wide ? 2 : 1;
+            vt->grid->cur.col += width;
         }
 
         c = next;
@@ -1081,9 +1075,9 @@ static int vt100_screen_scroll_region_is_active(VT100Screen *vt)
         || vt->grid->scroll_bottom != vt->grid->max.row - 1;
 }
 
-static void vt100_screen_check_wrap(VT100Screen *vt, int is_wide)
+static void vt100_screen_check_wrap(VT100Screen *vt, int width)
 {
-    if (vt->grid->cur.col + (is_wide ? 2 : 1) > vt->grid->max.col) {
+    if (vt->grid->cur.col + width > vt->grid->max.col) {
         vt100_screen_row_at(vt, vt->grid->cur.row)->wrapped = 1;
         vt100_screen_move_down_or_scroll(vt);
         vt->grid->cur.col = 0;

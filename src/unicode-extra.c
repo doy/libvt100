@@ -65,9 +65,31 @@ static struct vt100_char_range vt100_wide_emoji[] = {
     { 0x1F9C0, 0x1F9C0 },
 };
 
+static int vt100_is_zero_width(uint32_t codepoint);
+static int vt100_is_wide_char(uint32_t codepoint);
 static int vt100_is_wide_emoji(uint32_t codepoint);
 
-int vt100_is_wide_char(uint32_t codepoint)
+int vt100_char_width(uint32_t codepoint)
+{
+    if (vt100_is_zero_width(codepoint)) {
+        return 0;
+    }
+    else if (vt100_is_wide_char(codepoint)) {
+        return 2;
+    }
+    else {
+        return 1;
+    }
+}
+
+static int vt100_is_zero_width(uint32_t codepoint)
+{
+    /* we want soft hyphens to actually be zero width, because terminals don't
+     * do word wrapping */
+    return g_unichar_iszerowidth(codepoint) || codepoint == 0xAD;
+}
+
+static int vt100_is_wide_char(uint32_t codepoint)
 {
     return g_unichar_iswide(codepoint) || vt100_is_wide_emoji(codepoint);
 }
