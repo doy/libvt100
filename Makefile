@@ -34,10 +34,12 @@ $(OUT): $(OBJ)
 $(SOUT): $(OBJ)
 	$(QUIET_AR)$(AR) rcs $@ $^
 
-$(BUILD)%.o: $(SRC)%.c
-	@mkdir -p $(BUILD)
+$(BUILD)%.o: $(SRC)%.c | $(BUILD)
 	@$(MAKEDEPEND) -o $(<:$(SRC)%.c=$(BUILD).%.d) $<
 	$(QUIET_CC)$(CC) $(ALLCFLAGS) -c -fPIC -o $@ $<
+
+$(BUILD):
+	@mkdir -p $(BUILD)
 
 $(SRC)screen.c: $(SRC)parser.h
 
