@@ -24,7 +24,7 @@ endif
 
 all: $(OUT) $(SOUT) ## Build both static and dynamic libraries
 
-build: $(OUT) ## Build a dynamic library
+dynamic: $(OUT) ## Build a dynamic library
 
 static: $(SOUT) ## Build a static library
 
