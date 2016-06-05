@@ -51,6 +51,7 @@ struct vt100_cell {
     size_t len;
     struct vt100_cell_attrs attrs;
     unsigned int is_wide: 1;
+    unsigned int was_drawn: 1;
 };
 
 struct vt100_row {
@@ -103,7 +104,6 @@ struct vt100_screen {
     unsigned int update_title: 1;
     unsigned int update_icon_name: 1;
 
-    unsigned int dirty: 1;
     unsigned int custom_scrollback_length: 1;
 };
 
