@@ -10,7 +10,7 @@
 #define YY_EXIT_FAILURE (UNUSED(yyscanner), 2)
 %}
 
-%option reentrant nodefault batch
+%option reentrant nodefault batch 8bit
 %option noyywrap nounput noinput noyyalloc noyyrealloc noyyfree
 %option prefix="vt100_parser_yy"
 %option extra-type="VT100Screen *"

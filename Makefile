@@ -9,7 +9,7 @@ OBJ      = $(BUILD)parser.o \
 	   $(BUILD)unicode-extra.o
 LIBS     = glib-2.0
 OPT     ?= -g
-CFLAGS  ?= $(OPT) -Wall -Wextra -Werror -pedantic -std=c1x -D_XOPEN_SOURCE=600
+CFLAGS  ?= $(OPT) -Wall -Wextra -pedantic -std=c1x -D_XOPEN_SOURCE=600
 LDFLAGS ?= $(OPT)
 
 ALLCFLAGS  = $(shell pkg-config --cflags $(LIBS)) $(CFLAGS)
@@ -51,7 +51,7 @@ $(BUILD):
 $(SRC)screen.c: $(SRC)parser.h
 
 $(SRC)%.c: $(SRC)%.l
-	$(QUIET_LEX)$(LEX) -o $@ $<
+	$(QUIET_LEX)$(LEX) --fast -o $@ $<
 
 $(SRC)%.h: $(SRC)%.l
 	$(QUIET_LEX)$(LEX) --header-file=$(<:.l=.h) -o /dev/null $<
