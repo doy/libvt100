@@ -548,17 +548,20 @@ void vt100_screen_scroll_up(VT100Screen *vt, int count)
     }
     else {
         int scrollback = vt->scrollback_length;
+        int slack = scrollback / 10;
+        int max_row_buffer_size = scrollback + slack;
+        int overflow = vt->grid->row_count + count - max_row_buffer_size;
 
-        if (vt->grid->row_count + count > scrollback) {
-            int overflow = vt->grid->row_count + count - scrollback;
+        if (overflow > 0) {
+            int shift = overflow + slack;
 
-            vt100_screen_ensure_capacity(vt, scrollback);
-            for (i = 0; i < overflow; ++i) {
+            vt100_screen_ensure_capacity(vt, max_row_buffer_size);
+            for (i = 0; i < shift; ++i) {
                 free(vt->grid->rows[i].cells);
             }
             memmove(
-                &vt->grid->rows[0], &vt->grid->rows[overflow],
-                (scrollback - overflow) * sizeof(struct vt100_row));
+                &vt->grid->rows[0], &vt->grid->rows[shift],
+                (max_row_buffer_size - shift) * sizeof(struct vt100_row));
             for (i = scrollback - count; i < scrollback; ++i) {
                 vt->grid->rows[i].cells = calloc(
                     vt->grid->max.col, sizeof(struct vt100_cell));
