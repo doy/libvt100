@@ -864,7 +864,7 @@ int vt100_screen_row_max_col(VT100Screen *vt, int row)
         }
     }
 
-    return max + 1;
+    return max + ((max < vt->grid->max.col - 1 && cells[max].is_wide) ? 2 : 1);
 }
 
 void vt100_screen_cleanup(VT100Screen *vt)
