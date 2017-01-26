@@ -105,14 +105,12 @@ struct vt100_screen {
 
     unsigned int dirty: 1;
     unsigned int custom_scrollback_length: 1;
-    unsigned int wide_emoji: 1;
 };
 
 VT100Screen *vt100_screen_new(int rows, int cols);
 void vt100_screen_init(VT100Screen *vt);
 void vt100_screen_set_window_size(VT100Screen *vt, int rows, int cols);
 void vt100_screen_set_scrollback_length(VT100Screen *vt, int rows);
-void vt100_screen_set_wide_emoji(VT100Screen *vt, int wide_emoji);
 int vt100_screen_process_string(VT100Screen *vt, char *buf, size_t len);
 void vt100_screen_get_string_plaintext(
     VT100Screen *vt, struct vt100_loc *start, struct vt100_loc *end,
