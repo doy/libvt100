@@ -66,15 +66,15 @@ static struct vt100_char_range vt100_wide_emoji[] = {
 };
 
 static int vt100_is_zero_width(uint32_t codepoint);
-static int vt100_is_wide_char(uint32_t codepoint);
+static int vt100_is_wide_char(uint32_t codepoint, int wide_emoji);
 static int vt100_is_wide_emoji(uint32_t codepoint);
 
-int vt100_char_width(uint32_t codepoint)
+int vt100_char_width(uint32_t codepoint, int wide_emoji)
 {
     if (vt100_is_zero_width(codepoint)) {
         return 0;
     }
-    else if (vt100_is_wide_char(codepoint)) {
+    else if (vt100_is_wide_char(codepoint, wide_emoji)) {
         return 2;
     }
     else {
@@ -89,9 +89,10 @@ static int vt100_is_zero_width(uint32_t codepoint)
     return g_unichar_iszerowidth(codepoint) || codepoint == 0xAD;
 }
 
-static int vt100_is_wide_char(uint32_t codepoint)
+static int vt100_is_wide_char(uint32_t codepoint, int wide_emoji)
 {
-    return g_unichar_iswide(codepoint) || vt100_is_wide_emoji(codepoint);
+    return g_unichar_iswide(codepoint)
+        || (wide_emoji && vt100_is_wide_emoji(codepoint));
 }
 
 static int vt100_is_wide_emoji(uint32_t codepoint)

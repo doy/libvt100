@@ -107,6 +107,11 @@ void vt100_screen_set_scrollback_length(VT100Screen *vt, int rows)
     vt->custom_scrollback_length = 1;
 }
 
+void vt100_screen_set_wide_emoji(VT100Screen *vt, int wide_emoji)
+{
+    vt->wide_emoji = wide_emoji;
+}
+
 int vt100_screen_process_string(VT100Screen *vt, char *buf, size_t len)
 {
     struct vt100_parser_state *state = vt->parser_state;
@@ -204,7 +209,7 @@ void vt100_screen_show_string_utf8(VT100Screen *vt, char *buf, size_t len)
         int width;
 
         uc = g_utf8_get_char(c);
-        width = vt100_char_width(uc);
+        width = vt100_char_width(uc, vt->wide_emoji);
 
         if (width == 0) {
             if (vt->grid->cur.col > 0) {

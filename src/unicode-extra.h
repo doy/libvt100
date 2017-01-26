@@ -3,6 +3,6 @@
 
 #include <stdint.h>
 
-int vt100_char_width(uint32_t codepoint);
+int vt100_char_width(uint32_t codepoint, int wide_emoji);
 
 #endif
