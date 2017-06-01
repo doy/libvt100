@@ -13,80 +13,220 @@
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 6
-#define YY_FLEX_SUBMINOR_VERSION 3
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
 #endif
 
-    #define yy_create_buffer vt100_parser_yy_create_buffer
+#ifdef yy_create_buffer
+#define vt100_parser_yy_create_buffer_ALREADY_DEFINED
+#else
+#define yy_create_buffer vt100_parser_yy_create_buffer
+#endif
 
-    #define yy_delete_buffer vt100_parser_yy_delete_buffer
+#ifdef yy_delete_buffer
+#define vt100_parser_yy_delete_buffer_ALREADY_DEFINED
+#else
+#define yy_delete_buffer vt100_parser_yy_delete_buffer
+#endif
 
-    #define yy_scan_buffer vt100_parser_yy_scan_buffer
+#ifdef yy_scan_buffer
+#define vt100_parser_yy_scan_buffer_ALREADY_DEFINED
+#else
+#define yy_scan_buffer vt100_parser_yy_scan_buffer
+#endif
 
-    #define yy_scan_string vt100_parser_yy_scan_string
+#ifdef yy_scan_string
+#define vt100_parser_yy_scan_string_ALREADY_DEFINED
+#else
+#define yy_scan_string vt100_parser_yy_scan_string
+#endif
 
-    #define yy_scan_bytes vt100_parser_yy_scan_bytes
+#ifdef yy_scan_bytes
+#define vt100_parser_yy_scan_bytes_ALREADY_DEFINED
+#else
+#define yy_scan_bytes vt100_parser_yy_scan_bytes
+#endif
 
-    #define yy_init_buffer vt100_parser_yy_init_buffer
+#ifdef yy_init_buffer
+#define vt100_parser_yy_init_buffer_ALREADY_DEFINED
+#else
+#define yy_init_buffer vt100_parser_yy_init_buffer
+#endif
 
-    #define yy_flush_buffer vt100_parser_yy_flush_buffer
+#ifdef yy_flush_buffer
+#define vt100_parser_yy_flush_buffer_ALREADY_DEFINED
+#else
+#define yy_flush_buffer vt100_parser_yy_flush_buffer
+#endif
 
-    #define yy_load_buffer_state vt100_parser_yy_load_buffer_state
+#ifdef yy_load_buffer_state
+#define vt100_parser_yy_load_buffer_state_ALREADY_DEFINED
+#else
+#define yy_load_buffer_state vt100_parser_yy_load_buffer_state
+#endif
 
-    #define yy_switch_to_buffer vt100_parser_yy_switch_to_buffer
+#ifdef yy_switch_to_buffer
+#define vt100_parser_yy_switch_to_buffer_ALREADY_DEFINED
+#else
+#define yy_switch_to_buffer vt100_parser_yy_switch_to_buffer
+#endif
 
-    #define yypush_buffer_state vt100_parser_yypush_buffer_state
+#ifdef yypush_buffer_state
+#define vt100_parser_yypush_buffer_state_ALREADY_DEFINED
+#else
+#define yypush_buffer_state vt100_parser_yypush_buffer_state
+#endif
 
-    #define yypop_buffer_state vt100_parser_yypop_buffer_state
+#ifdef yypop_buffer_state
+#define vt100_parser_yypop_buffer_state_ALREADY_DEFINED
+#else
+#define yypop_buffer_state vt100_parser_yypop_buffer_state
+#endif
 
-    #define yyensure_buffer_stack vt100_parser_yyensure_buffer_stack
+#ifdef yyensure_buffer_stack
+#define vt100_parser_yyensure_buffer_stack_ALREADY_DEFINED
+#else
+#define yyensure_buffer_stack vt100_parser_yyensure_buffer_stack
+#endif
 
-    #define yylex vt100_parser_yylex
+#ifdef yylex
+#define vt100_parser_yylex_ALREADY_DEFINED
+#else
+#define yylex vt100_parser_yylex
+#endif
 
-    #define yyrestart vt100_parser_yyrestart
+#ifdef yyrestart
+#define vt100_parser_yyrestart_ALREADY_DEFINED
+#else
+#define yyrestart vt100_parser_yyrestart
+#endif
 
-    #define yylex_init vt100_parser_yylex_init
+#ifdef yylex_init
+#define vt100_parser_yylex_init_ALREADY_DEFINED
+#else
+#define yylex_init vt100_parser_yylex_init
+#endif
 
-    #define yylex_init_extra vt100_parser_yylex_init_extra
+#ifdef yylex_init_extra
+#define vt100_parser_yylex_init_extra_ALREADY_DEFINED
+#else
+#define yylex_init_extra vt100_parser_yylex_init_extra
+#endif
 
-    #define yylex_destroy vt100_parser_yylex_destroy
+#ifdef yylex_destroy
+#define vt100_parser_yylex_destroy_ALREADY_DEFINED
+#else
+#define yylex_destroy vt100_parser_yylex_destroy
+#endif
 
-    #define yyget_debug vt100_parser_yyget_debug
+#ifdef yyget_debug
+#define vt100_parser_yyget_debug_ALREADY_DEFINED
+#else
+#define yyget_debug vt100_parser_yyget_debug
+#endif
 
-    #define yyset_debug vt100_parser_yyset_debug
+#ifdef yyset_debug
+#define vt100_parser_yyset_debug_ALREADY_DEFINED
+#else
+#define yyset_debug vt100_parser_yyset_debug
+#endif
 
-    #define yyget_extra vt100_parser_yyget_extra
+#ifdef yyget_extra
+#define vt100_parser_yyget_extra_ALREADY_DEFINED
+#else
+#define yyget_extra vt100_parser_yyget_extra
+#endif
 
-    #define yyset_extra vt100_parser_yyset_extra
+#ifdef yyset_extra
+#define vt100_parser_yyset_extra_ALREADY_DEFINED
+#else
+#define yyset_extra vt100_parser_yyset_extra
+#endif
 
-    #define yyget_in vt100_parser_yyget_in
+#ifdef yyget_in
+#define vt100_parser_yyget_in_ALREADY_DEFINED
+#else
+#define yyget_in vt100_parser_yyget_in
+#endif
 
-    #define yyset_in vt100_parser_yyset_in
+#ifdef yyset_in
+#define vt100_parser_yyset_in_ALREADY_DEFINED
+#else
+#define yyset_in vt100_parser_yyset_in
+#endif
 
-    #define yyget_out vt100_parser_yyget_out
+#ifdef yyget_out
+#define vt100_parser_yyget_out_ALREADY_DEFINED
+#else
+#define yyget_out vt100_parser_yyget_out
+#endif
 
-    #define yyset_out vt100_parser_yyset_out
+#ifdef yyset_out
+#define vt100_parser_yyset_out_ALREADY_DEFINED
+#else
+#define yyset_out vt100_parser_yyset_out
+#endif
 
-    #define yyget_leng vt100_parser_yyget_leng
+#ifdef yyget_leng
+#define vt100_parser_yyget_leng_ALREADY_DEFINED
+#else
+#define yyget_leng vt100_parser_yyget_leng
+#endif
 
-    #define yyget_text vt100_parser_yyget_text
+#ifdef yyget_text
+#define vt100_parser_yyget_text_ALREADY_DEFINED
+#else
+#define yyget_text vt100_parser_yyget_text
+#endif
 
-    #define yyget_lineno vt100_parser_yyget_lineno
+#ifdef yyget_lineno
+#define vt100_parser_yyget_lineno_ALREADY_DEFINED
+#else
+#define yyget_lineno vt100_parser_yyget_lineno
+#endif
 
-    #define yyset_lineno vt100_parser_yyset_lineno
+#ifdef yyset_lineno
+#define vt100_parser_yyset_lineno_ALREADY_DEFINED
+#else
+#define yyset_lineno vt100_parser_yyset_lineno
+#endif
 
-        #define yyget_column vt100_parser_yyget_column
+#ifdef yyget_column
+#define vt100_parser_yyget_column_ALREADY_DEFINED
+#else
+#define yyget_column vt100_parser_yyget_column
+#endif
 
-        #define yyset_column vt100_parser_yyset_column
+#ifdef yyset_column
+#define vt100_parser_yyset_column_ALREADY_DEFINED
+#else
+#define yyset_column vt100_parser_yyset_column
+#endif
 
-    #define yywrap vt100_parser_yywrap
+#ifdef yywrap
+#define vt100_parser_yywrap_ALREADY_DEFINED
+#else
+#define yywrap vt100_parser_yywrap
+#endif
 
-    #define yyalloc vt100_parser_yyalloc
+#ifdef yyalloc
+#define vt100_parser_yyalloc_ALREADY_DEFINED
+#else
+#define yyalloc vt100_parser_yyalloc
+#endif
 
-    #define yyrealloc vt100_parser_yyrealloc
+#ifdef yyrealloc
+#define vt100_parser_yyrealloc_ALREADY_DEFINED
+#else
+#define yyrealloc vt100_parser_yyrealloc
+#endif
 
-    #define yyfree vt100_parser_yyfree
+#ifdef yyfree
+#define vt100_parser_yyfree_ALREADY_DEFINED
+#else
+#define yyfree vt100_parser_yyfree
+#endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
 
@@ -158,9 +298,15 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
 #endif /* ! C99 */
 
 #endif /* ! FLEXINT_H */
+
+/* begin standard C++ headers. */
 
 /* TODO: this is always defined, so inline it */
 #define yyconst const
@@ -262,21 +408,21 @@ struct yy_buffer_state
 	};
 #endif /* !YY_STRUCT_YY_BUFFER_STATE */
 
-void vt100_parser_yyrestart ( FILE *input_file , yyscan_t yyscanner );
-void vt100_parser_yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
-YY_BUFFER_STATE vt100_parser_yy_create_buffer ( FILE *file, int size , yyscan_t yyscanner );
-void vt100_parser_yy_delete_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
-void vt100_parser_yy_flush_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
-void vt100_parser_yypush_buffer_state ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
-void vt100_parser_yypop_buffer_state ( yyscan_t yyscanner );
+void yyrestart ( FILE *input_file , yyscan_t yyscanner );
+void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_create_buffer ( FILE *file, int size , yyscan_t yyscanner );
+void yy_delete_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
+void yy_flush_buffer ( YY_BUFFER_STATE b , yyscan_t yyscanner );
+void yypush_buffer_state ( YY_BUFFER_STATE new_buffer , yyscan_t yyscanner );
+void yypop_buffer_state ( yyscan_t yyscanner );
 
-YY_BUFFER_STATE vt100_parser_yy_scan_buffer ( char *base, yy_size_t size , yyscan_t yyscanner );
-YY_BUFFER_STATE vt100_parser_yy_scan_string ( const char *yy_str , yyscan_t yyscanner );
-YY_BUFFER_STATE vt100_parser_yy_scan_bytes ( const char *bytes, int len , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_string ( const char *yy_str , yyscan_t yyscanner );
+YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len , yyscan_t yyscanner );
 
-void *vt100_parser_yyalloc ( yy_size_t , yyscan_t yyscanner );
-void *vt100_parser_yyrealloc ( void *, yy_size_t , yyscan_t yyscanner );
-void vt100_parser_yyfree ( void * , yyscan_t yyscanner );
+void *yyalloc ( yy_size_t , yyscan_t yyscanner );
+void *yyrealloc ( void *, yy_size_t , yyscan_t yyscanner );
+void yyfree ( void * , yyscan_t yyscanner );
 
 /* Begin user sect3 */
 
@@ -300,42 +446,42 @@ void vt100_parser_yyfree ( void * , yyscan_t yyscanner );
 
 #define YY_EXTRA_TYPE VT100Screen *
 
-int vt100_parser_yylex_init (yyscan_t* scanner);
+int yylex_init (yyscan_t* scanner);
 
-int vt100_parser_yylex_init_extra ( YY_EXTRA_TYPE user_defined, yyscan_t* scanner);
+int yylex_init_extra ( YY_EXTRA_TYPE user_defined, yyscan_t* scanner);
 
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int vt100_parser_yylex_destroy ( yyscan_t yyscanner );
+int yylex_destroy ( yyscan_t yyscanner );
 
-int vt100_parser_yyget_debug ( yyscan_t yyscanner );
+int yyget_debug ( yyscan_t yyscanner );
 
-void vt100_parser_yyset_debug ( int debug_flag , yyscan_t yyscanner );
+void yyset_debug ( int debug_flag , yyscan_t yyscanner );
 
-YY_EXTRA_TYPE vt100_parser_yyget_extra ( yyscan_t yyscanner );
+YY_EXTRA_TYPE yyget_extra ( yyscan_t yyscanner );
 
-void vt100_parser_yyset_extra ( YY_EXTRA_TYPE user_defined , yyscan_t yyscanner );
+void yyset_extra ( YY_EXTRA_TYPE user_defined , yyscan_t yyscanner );
 
-FILE *vt100_parser_yyget_in ( yyscan_t yyscanner );
+FILE *yyget_in ( yyscan_t yyscanner );
 
-void vt100_parser_yyset_in  ( FILE * _in_str , yyscan_t yyscanner );
+void yyset_in  ( FILE * _in_str , yyscan_t yyscanner );
 
-FILE *vt100_parser_yyget_out ( yyscan_t yyscanner );
+FILE *yyget_out ( yyscan_t yyscanner );
 
-void vt100_parser_yyset_out  ( FILE * _out_str , yyscan_t yyscanner );
+void yyset_out  ( FILE * _out_str , yyscan_t yyscanner );
 
-			int vt100_parser_yyget_leng ( yyscan_t yyscanner );
+			int yyget_leng ( yyscan_t yyscanner );
 
-char *vt100_parser_yyget_text ( yyscan_t yyscanner );
+char *yyget_text ( yyscan_t yyscanner );
 
-int vt100_parser_yyget_lineno ( yyscan_t yyscanner );
+int yyget_lineno ( yyscan_t yyscanner );
 
-void vt100_parser_yyset_lineno ( int _line_number , yyscan_t yyscanner );
+void yyset_lineno ( int _line_number , yyscan_t yyscanner );
 
-int vt100_parser_yyget_column  ( yyscan_t yyscanner );
+int yyget_column  ( yyscan_t yyscanner );
 
-void vt100_parser_yyset_column ( int _column_no , yyscan_t yyscanner );
+void yyset_column ( int _column_no , yyscan_t yyscanner );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -343,9 +489,9 @@ void vt100_parser_yyset_column ( int _column_no , yyscan_t yyscanner );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int vt100_parser_yywrap ( yyscan_t yyscanner );
+extern "C" int yywrap ( yyscan_t yyscanner );
 #else
-extern int vt100_parser_yywrap ( yyscan_t yyscanner );
+extern int yywrap ( yyscan_t yyscanner );
 #endif
 #endif
 
@@ -382,9 +528,9 @@ static int yy_flex_strlen ( const char * , yyscan_t yyscanner);
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
-extern int vt100_parser_yylex (yyscan_t yyscanner);
+extern int yylex (yyscan_t yyscanner);
 
-#define YY_DECL int vt100_parser_yylex (yyscan_t yyscanner)
+#define YY_DECL int yylex (yyscan_t yyscanner)
 #endif /* !YY_DECL */
 
 /* yy_get_previous_state - get the state just before the EOB char was reached */
@@ -401,9 +547,154 @@ extern int vt100_parser_yylex (yyscan_t yyscanner);
 #undef YY_DECL
 #endif
 
+#ifndef vt100_parser_yy_create_buffer_ALREADY_DEFINED
+#undef yy_create_buffer
+#endif
+#ifndef vt100_parser_yy_delete_buffer_ALREADY_DEFINED
+#undef yy_delete_buffer
+#endif
+#ifndef vt100_parser_yy_scan_buffer_ALREADY_DEFINED
+#undef yy_scan_buffer
+#endif
+#ifndef vt100_parser_yy_scan_string_ALREADY_DEFINED
+#undef yy_scan_string
+#endif
+#ifndef vt100_parser_yy_scan_bytes_ALREADY_DEFINED
+#undef yy_scan_bytes
+#endif
+#ifndef vt100_parser_yy_init_buffer_ALREADY_DEFINED
+#undef yy_init_buffer
+#endif
+#ifndef vt100_parser_yy_flush_buffer_ALREADY_DEFINED
+#undef yy_flush_buffer
+#endif
+#ifndef vt100_parser_yy_load_buffer_state_ALREADY_DEFINED
+#undef yy_load_buffer_state
+#endif
+#ifndef vt100_parser_yy_switch_to_buffer_ALREADY_DEFINED
+#undef yy_switch_to_buffer
+#endif
+#ifndef vt100_parser_yypush_buffer_state_ALREADY_DEFINED
+#undef yypush_buffer_state
+#endif
+#ifndef vt100_parser_yypop_buffer_state_ALREADY_DEFINED
+#undef yypop_buffer_state
+#endif
+#ifndef vt100_parser_yyensure_buffer_stack_ALREADY_DEFINED
+#undef yyensure_buffer_stack
+#endif
+#ifndef vt100_parser_yylex_ALREADY_DEFINED
+#undef yylex
+#endif
+#ifndef vt100_parser_yyrestart_ALREADY_DEFINED
+#undef yyrestart
+#endif
+#ifndef vt100_parser_yylex_init_ALREADY_DEFINED
+#undef yylex_init
+#endif
+#ifndef vt100_parser_yylex_init_extra_ALREADY_DEFINED
+#undef yylex_init_extra
+#endif
+#ifndef vt100_parser_yylex_destroy_ALREADY_DEFINED
+#undef yylex_destroy
+#endif
+#ifndef vt100_parser_yyget_debug_ALREADY_DEFINED
+#undef yyget_debug
+#endif
+#ifndef vt100_parser_yyset_debug_ALREADY_DEFINED
+#undef yyset_debug
+#endif
+#ifndef vt100_parser_yyget_extra_ALREADY_DEFINED
+#undef yyget_extra
+#endif
+#ifndef vt100_parser_yyset_extra_ALREADY_DEFINED
+#undef yyset_extra
+#endif
+#ifndef vt100_parser_yyget_in_ALREADY_DEFINED
+#undef yyget_in
+#endif
+#ifndef vt100_parser_yyset_in_ALREADY_DEFINED
+#undef yyset_in
+#endif
+#ifndef vt100_parser_yyget_out_ALREADY_DEFINED
+#undef yyget_out
+#endif
+#ifndef vt100_parser_yyset_out_ALREADY_DEFINED
+#undef yyset_out
+#endif
+#ifndef vt100_parser_yyget_leng_ALREADY_DEFINED
+#undef yyget_leng
+#endif
+#ifndef vt100_parser_yyget_text_ALREADY_DEFINED
+#undef yyget_text
+#endif
+#ifndef vt100_parser_yyget_lineno_ALREADY_DEFINED
+#undef yyget_lineno
+#endif
+#ifndef vt100_parser_yyset_lineno_ALREADY_DEFINED
+#undef yyset_lineno
+#endif
+#ifndef vt100_parser_yyget_column_ALREADY_DEFINED
+#undef yyget_column
+#endif
+#ifndef vt100_parser_yyset_column_ALREADY_DEFINED
+#undef yyset_column
+#endif
+#ifndef vt100_parser_yywrap_ALREADY_DEFINED
+#undef yywrap
+#endif
+#ifndef vt100_parser_yyget_lval_ALREADY_DEFINED
+#undef yyget_lval
+#endif
+#ifndef vt100_parser_yyset_lval_ALREADY_DEFINED
+#undef yyset_lval
+#endif
+#ifndef vt100_parser_yyget_lloc_ALREADY_DEFINED
+#undef yyget_lloc
+#endif
+#ifndef vt100_parser_yyset_lloc_ALREADY_DEFINED
+#undef yyset_lloc
+#endif
+#ifndef vt100_parser_yyalloc_ALREADY_DEFINED
+#undef yyalloc
+#endif
+#ifndef vt100_parser_yyrealloc_ALREADY_DEFINED
+#undef yyrealloc
+#endif
+#ifndef vt100_parser_yyfree_ALREADY_DEFINED
+#undef yyfree
+#endif
+#ifndef vt100_parser_yytext_ALREADY_DEFINED
+#undef yytext
+#endif
+#ifndef vt100_parser_yyleng_ALREADY_DEFINED
+#undef yyleng
+#endif
+#ifndef vt100_parser_yyin_ALREADY_DEFINED
+#undef yyin
+#endif
+#ifndef vt100_parser_yyout_ALREADY_DEFINED
+#undef yyout
+#endif
+#ifndef vt100_parser_yy_flex_debug_ALREADY_DEFINED
+#undef yy_flex_debug
+#endif
+#ifndef vt100_parser_yylineno_ALREADY_DEFINED
+#undef yylineno
+#endif
+#ifndef vt100_parser_yytables_fload_ALREADY_DEFINED
+#undef yytables_fload
+#endif
+#ifndef vt100_parser_yytables_destroy_ALREADY_DEFINED
+#undef yytables_destroy
+#endif
+#ifndef vt100_parser_yyTABLES_NAME_ALREADY_DEFINED
+#undef yyTABLES_NAME
+#endif
+
 #line 253 "src/parser.l"
 
 
-#line 407 "src/parser.h"
+#line 698 "src/parser.h"
 #undef vt100_parser_yyIN_HEADER
 #endif /* vt100_parser_yyHEADER_H */
