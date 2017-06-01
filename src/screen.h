@@ -16,6 +16,21 @@ enum VT100MouseReportingModeType {
     VT100_MOUSEREPORTING_SGR
 };
 
+enum VT100ButtonEventType {
+    VT100_BUTTONEVENT_PRESS,
+    VT100_BUTTONEVENT_RELEASE,
+    VT100_BUTTONEVENT_MOTION
+};
+
+enum VT100ButtonType {
+    VT100_BUTTON_NONE,
+    VT100_BUTTON_LEFT,
+    VT100_BUTTON_MIDDLE,
+    VT100_BUTTON_RIGHT,
+    VT100_BUTTON_SCROLL_UP,
+    VT100_BUTTON_SCROLL_DOWN
+};
+
 struct vt100_loc {
     int row;
     int col;
@@ -199,6 +214,9 @@ void vt100_screen_reset_origin_mode(VT100Screen *vt);
 void vt100_screen_set_window_title(VT100Screen *vt, char *buf, size_t len);
 void vt100_screen_set_icon_name(VT100Screen *vt, char *buf, size_t len);
 int vt100_screen_row_max_col(VT100Screen *vt, int row);
+int vt100_screen_format_mouse_reporting_response(
+    VT100Screen *vt, char *buf, size_t len, struct vt100_loc loc,
+    int event_type, int button, int shift, int alt, int ctrl);
 void vt100_screen_cleanup(VT100Screen *vt);
 void vt100_screen_delete(VT100Screen *vt);
 

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -923,6 +924,128 @@ int vt100_screen_row_max_col(VT100Screen *vt, int row)
     }
 
     return max + ((max < vt->grid->max.col - 1 && cells[max].is_wide) ? 2 : 1);
+}
+
+int vt100_screen_format_mouse_reporting_response(
+    VT100Screen *vt, char *buf, size_t len, struct vt100_loc loc,
+    int event_type, int button, int shift, int alt, int ctrl)
+{
+    unsigned char status;
+    int x, y;
+
+    if (button > VT100_BUTTON_RIGHT) {
+        /* don't care about button release events for scroll wheel */
+        if (event_type == VT100_BUTTONEVENT_RELEASE) {
+            return 0;
+        }
+
+        /* don't care about scroll wheel events for x10 mode */
+        if (!vt100_screen_mouse_reporting_wants_button_release(vt)) {
+            return 0;
+        }
+    }
+
+    if (event_type == VT100_BUTTONEVENT_RELEASE) {
+        status = 3;
+    }
+    else {
+        switch (button) {
+        case VT100_BUTTON_LEFT:
+            status = 0;
+            break;
+        case VT100_BUTTON_MIDDLE:
+            status = 1;
+            break;
+        case VT100_BUTTON_RIGHT:
+            status = 2;
+            break;
+        case VT100_BUTTON_SCROLL_UP:
+            status = 64;
+            break;
+        case VT100_BUTTON_SCROLL_DOWN:
+            status = 65;
+            break;
+        case VT100_BUTTON_NONE:
+            status = 3;
+            break;
+        default:
+            return 0;
+        }
+    }
+
+    /* don't care about modifier keys in x10 mode */
+    if (vt100_screen_mouse_reporting_wants_button_release(vt)) {
+        if (shift) {
+            status |= 4;
+        }
+        if (alt) {
+            status |= 8;
+        }
+        if (ctrl) {
+            status |= 16;
+        }
+    }
+
+    if (event_type == VT100_BUTTONEVENT_MOTION) {
+        status += 32;
+    }
+
+    status += 32;
+    x = loc.col + 1 + 32;
+    y = loc.row + 1 + 32;
+
+    switch (vt->mouse_reporting_mode) {
+    case VT100_MOUSEREPORTING_NORMAL:
+        if (x > 255 || y > 255) {
+            return 0;
+        }
+
+        return snprintf(buf, len, "\033[M%c%c%c", status, x, y);
+    case VT100_MOUSEREPORTING_UTF8: {
+        char status_bytes[2], x_bytes[2], y_bytes[2];
+        int status_len, x_len, y_len;
+
+        if (status > 0x7F) {
+            status_bytes[0] = 0xC0 | (status >> 3);
+            status_bytes[1] = 0x80 | (status & 0x6F);
+            status_len = 2;
+        }
+        else {
+            status_bytes[0] = status;
+            status_len = 1;
+        }
+
+        if (x > 0x7F) {
+            x_bytes[0] = 0xC0 | (x >> 6);
+            x_bytes[1] = 0x80 | (x & 0x3F);
+            x_len = 2;
+        }
+        else {
+            x_bytes[0] = x;
+            x_len = 1;
+        }
+
+        if (y > 0x7F) {
+            y_bytes[0] = 0xC0 | (y >> 6);
+            y_bytes[1] = 0x80 | (y & 0x3F);
+            y_len = 2;
+        }
+        else {
+            y_bytes[0] = y;
+            y_len = 1;
+        }
+
+        return snprintf(
+            buf, len, "\033[M%.*s%.*s%.*s", status_len, status_bytes, x_len,
+            x_bytes, y_len, y_bytes);
+    }
+    case VT100_MOUSEREPORTING_SGR:
+        return snprintf(
+            buf, len, "\033[<%d;%d;%d%c", status - 32, x - 32, y - 32,
+            event_type == VT100_BUTTONEVENT_RELEASE ? 'm' : 'M');
+    default:
+        return 0;
+    }
 }
 
 void vt100_screen_cleanup(VT100Screen *vt)
