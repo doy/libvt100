@@ -822,6 +822,16 @@ void vt100_screen_reset_mouse_reporting_button_motion(VT100Screen *vt)
     vt->mouse_reporting_button_motion = 0;
 }
 
+void vt100_screen_set_mouse_reporting_any_motion(VT100Screen *vt)
+{
+    vt->mouse_reporting_any_motion = 1;
+}
+
+void vt100_screen_reset_mouse_reporting_any_motion(VT100Screen *vt)
+{
+    vt->mouse_reporting_any_motion = 0;
+}
+
 void vt100_screen_set_mouse_reporting_sgr_mode(VT100Screen *vt)
 {
     vt->mouse_reporting_sgr_mode = 1;

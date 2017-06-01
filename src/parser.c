@@ -2728,6 +2728,7 @@ static void vt100_parser_handle_ris(VT100Screen *vt)
     vt100_screen_reset_mouse_reporting_press(vt);
     vt100_screen_reset_mouse_reporting_press_release(vt);
     vt100_screen_reset_mouse_reporting_button_motion(vt);
+    vt100_screen_reset_mouse_reporting_any_motion(vt);
     vt100_screen_reset_mouse_reporting_sgr_mode(vt);
     vt100_screen_reset_bracketed_paste(vt);
     vt100_screen_reset_origin_mode(vt);
@@ -3050,6 +3051,9 @@ static void vt100_parser_handle_sm(VT100Screen *vt, char *buf, size_t len)
             case 1002:
                 vt100_screen_set_mouse_reporting_button_motion(vt);
                 break;
+            case 1003:
+                vt100_screen_set_mouse_reporting_any_motion(vt);
+                break;
             case 1006:
                 vt100_screen_set_mouse_reporting_sgr_mode(vt);
                 break;
@@ -3123,6 +3127,9 @@ static void vt100_parser_handle_rm(VT100Screen *vt, char *buf, size_t len)
                 break;
             case 1002:
                 vt100_screen_reset_mouse_reporting_button_motion(vt);
+                break;
+            case 1003:
+                vt100_screen_reset_mouse_reporting_any_motion(vt);
                 break;
             case 1006:
                 vt100_screen_reset_mouse_reporting_sgr_mode(vt);
