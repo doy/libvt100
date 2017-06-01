@@ -842,6 +842,32 @@ void vt100_screen_reset_mouse_reporting_sgr_mode(VT100Screen *vt)
     vt->mouse_reporting_sgr_mode = 0;
 }
 
+int vt100_screen_mouse_reporting_wants_button_press(VT100Screen *vt)
+{
+    return vt->mouse_reporting_press
+        || vt->mouse_reporting_press_release
+        || vt->mouse_reporting_button_motion
+        || vt->mouse_reporting_any_motion;
+}
+
+int vt100_screen_mouse_reporting_wants_button_release(VT100Screen *vt)
+{
+    return vt->mouse_reporting_press_release
+        || vt->mouse_reporting_button_motion
+        || vt->mouse_reporting_any_motion;
+}
+
+int vt100_screen_mouse_reporting_wants_button_motion(VT100Screen *vt)
+{
+    return vt->mouse_reporting_button_motion
+        || vt->mouse_reporting_any_motion;
+}
+
+int vt100_screen_mouse_reporting_wants_any_motion(VT100Screen *vt)
+{
+    return vt->mouse_reporting_any_motion;
+}
+
 void vt100_screen_set_bracketed_paste(VT100Screen *vt)
 {
     vt->bracketed_paste = 1;
