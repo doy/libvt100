@@ -328,13 +328,13 @@ static void vt100_parser_handle_ris(VT100Screen *vt)
     vt100_screen_save_cursor(vt);
     vt100_screen_reset_text_attributes(vt);
     vt100_screen_show_cursor(vt);
+    vt100_screen_set_mouse_reporting_normal_mode(vt);
     vt100_screen_reset_application_keypad(vt);
     vt100_screen_reset_application_cursor(vt);
     vt100_screen_reset_mouse_reporting_press(vt);
     vt100_screen_reset_mouse_reporting_press_release(vt);
     vt100_screen_reset_mouse_reporting_button_motion(vt);
     vt100_screen_reset_mouse_reporting_any_motion(vt);
-    vt100_screen_reset_mouse_reporting_sgr_mode(vt);
     vt100_screen_reset_bracketed_paste(vt);
     vt100_screen_reset_origin_mode(vt);
 }
@@ -659,6 +659,9 @@ static void vt100_parser_handle_sm(VT100Screen *vt, char *buf, size_t len)
             case 1003:
                 vt100_screen_set_mouse_reporting_any_motion(vt);
                 break;
+            case 1005:
+                vt100_screen_set_mouse_reporting_utf8_mode(vt);
+                break;
             case 1006:
                 vt100_screen_set_mouse_reporting_sgr_mode(vt);
                 break;
@@ -671,10 +674,6 @@ static void vt100_parser_handle_sm(VT100Screen *vt, char *buf, size_t len)
                 break;
             case 12: // blinking cursor
                 // not interested in blinking cursors
-            case 1005: // UTF-8 mouse tracking mode
-                // will just default this to always on. might break some
-                // programs, but the programs that will break will already be
-                // broken for terms with width greater than 223.
             case 1034: // interpret Meta key
                 // not actually sure if ignoring this is correct - need to see
                 // what exactly it does. don't think it's important though.
@@ -736,8 +735,9 @@ static void vt100_parser_handle_rm(VT100Screen *vt, char *buf, size_t len)
             case 1003:
                 vt100_screen_reset_mouse_reporting_any_motion(vt);
                 break;
+            case 1005:
             case 1006:
-                vt100_screen_reset_mouse_reporting_sgr_mode(vt);
+                vt100_screen_set_mouse_reporting_normal_mode(vt);
                 break;
             case 47:
             case 1049:
@@ -748,10 +748,6 @@ static void vt100_parser_handle_rm(VT100Screen *vt, char *buf, size_t len)
                 break;
             case 12: // blinking cursor
                 // not interested in blinking cursors
-            case 1005: // UTF-8 mouse tracking mode
-                // will just default this to always on. might break some
-                // programs, but the programs that will break will already be
-                // broken for terms with width greater than 223.
             case 1034: // interpret Meta key
                 // not actually sure if ignoring this is correct - need to see
                 // what exactly it does. don't think it's important though.

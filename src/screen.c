@@ -832,14 +832,19 @@ void vt100_screen_reset_mouse_reporting_any_motion(VT100Screen *vt)
     vt->mouse_reporting_any_motion = 0;
 }
 
-void vt100_screen_set_mouse_reporting_sgr_mode(VT100Screen *vt)
+void vt100_screen_set_mouse_reporting_normal_mode(VT100Screen *vt)
 {
-    vt->mouse_reporting_sgr_mode = 1;
+    vt->mouse_reporting_mode = VT100_MOUSEREPORTING_NORMAL;
 }
 
-void vt100_screen_reset_mouse_reporting_sgr_mode(VT100Screen *vt)
+void vt100_screen_set_mouse_reporting_utf8_mode(VT100Screen *vt)
 {
-    vt->mouse_reporting_sgr_mode = 0;
+    vt->mouse_reporting_mode = VT100_MOUSEREPORTING_UTF8;
+}
+
+void vt100_screen_set_mouse_reporting_sgr_mode(VT100Screen *vt)
+{
+    vt->mouse_reporting_mode = VT100_MOUSEREPORTING_SGR;
 }
 
 int vt100_screen_mouse_reporting_wants_button_press(VT100Screen *vt)

@@ -10,6 +10,12 @@ enum VT100ColorType {
     VT100_COLOR_RGB
 };
 
+enum VT100MouseReportingModeType {
+    VT100_MOUSEREPORTING_NORMAL,
+    VT100_MOUSEREPORTING_UTF8,
+    VT100_MOUSEREPORTING_SGR
+};
+
 struct vt100_loc {
     int row;
     int col;
@@ -78,16 +84,18 @@ struct vt100_screen {
     struct vt100_grid *grid;
     struct vt100_grid *alternate;
 
+    struct vt100_parser_state *parser_state;
+
     char *title;
     size_t title_len;
     char *icon_name;
     size_t icon_name_len;
 
-    struct vt100_cell_attrs attrs;
-
     int scrollback_length;
 
-    struct vt100_parser_state *parser_state;
+    struct vt100_cell_attrs attrs;
+
+    unsigned char mouse_reporting_mode;
 
     unsigned int hide_cursor: 1;
     unsigned int application_keypad: 1;
@@ -96,7 +104,6 @@ struct vt100_screen {
     unsigned int mouse_reporting_press_release: 1;
     unsigned int mouse_reporting_button_motion: 1;
     unsigned int mouse_reporting_any_motion: 1;
-    unsigned int mouse_reporting_sgr_mode: 1;
     unsigned int bracketed_paste: 1;
     unsigned int origin_mode: 1;
 
@@ -178,8 +185,9 @@ void vt100_screen_set_mouse_reporting_button_motion(VT100Screen *vt);
 void vt100_screen_reset_mouse_reporting_button_motion(VT100Screen *vt);
 void vt100_screen_set_mouse_reporting_any_motion(VT100Screen *vt);
 void vt100_screen_reset_mouse_reporting_any_motion(VT100Screen *vt);
+void vt100_screen_set_mouse_reporting_normal_mode(VT100Screen *vt);
+void vt100_screen_set_mouse_reporting_utf8_mode(VT100Screen *vt);
 void vt100_screen_set_mouse_reporting_sgr_mode(VT100Screen *vt);
-void vt100_screen_reset_mouse_reporting_sgr_mode(VT100Screen *vt);
 int vt100_screen_mouse_reporting_wants_button_press(VT100Screen *vt);
 int vt100_screen_mouse_reporting_wants_button_release(VT100Screen *vt);
 int vt100_screen_mouse_reporting_wants_button_motion(VT100Screen *vt);
