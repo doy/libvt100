@@ -97,6 +97,7 @@ struct vt100_screen {
     unsigned int mouse_reporting_button_motion: 1;
     unsigned int mouse_reporting_sgr_mode: 1;
     unsigned int bracketed_paste: 1;
+    unsigned int origin_mode: 1;
 
     unsigned int visual_bell: 1;
     unsigned int audible_bell: 1;
@@ -178,6 +179,8 @@ void vt100_screen_set_mouse_reporting_sgr_mode(VT100Screen *vt);
 void vt100_screen_reset_mouse_reporting_sgr_mode(VT100Screen *vt);
 void vt100_screen_set_bracketed_paste(VT100Screen *vt);
 void vt100_screen_reset_bracketed_paste(VT100Screen *vt);
+void vt100_screen_set_origin_mode(VT100Screen *vt);
+void vt100_screen_reset_origin_mode(VT100Screen *vt);
 void vt100_screen_set_window_title(VT100Screen *vt, char *buf, size_t len);
 void vt100_screen_set_icon_name(VT100Screen *vt, char *buf, size_t len);
 int vt100_screen_row_max_col(VT100Screen *vt, int row);

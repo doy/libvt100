@@ -261,6 +261,13 @@ void vt100_screen_move_to(VT100Screen *vt, int row, int col)
         : col >= vt->grid->max.col ? vt->grid->max.col - 1
         : col;
 
+    if (vt->origin_mode) {
+        row += vt->grid->scroll_top;
+        if (row > vt->grid->scroll_bottom) {
+            row = vt->grid->scroll_bottom;
+        }
+    }
+
     vt->grid->cur.row = row;
     vt->grid->cur.col = col;
 }
@@ -833,6 +840,16 @@ void vt100_screen_set_bracketed_paste(VT100Screen *vt)
 void vt100_screen_reset_bracketed_paste(VT100Screen *vt)
 {
     vt->bracketed_paste = 0;
+}
+
+void vt100_screen_set_origin_mode(VT100Screen *vt)
+{
+    vt->origin_mode = 1;
+}
+
+void vt100_screen_reset_origin_mode(VT100Screen *vt)
+{
+    vt->origin_mode = 0;
 }
 
 void vt100_screen_set_window_title(VT100Screen *vt, char *buf, size_t len)
