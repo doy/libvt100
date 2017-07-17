@@ -915,7 +915,7 @@ void vt100_screen_set_icon_name(VT100Screen *vt, char *buf, size_t len)
 int vt100_screen_row_max_col(VT100Screen *vt, int row)
 {
     struct vt100_cell *cells = vt->grid->rows[row].cells;
-    int i, max = -1;
+    int i, max = 0;
 
     for (i = 0; i < vt->grid->max.col; ++i) {
         if (cells[i].len) {
