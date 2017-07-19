@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
 
         parsed = vt100_screen_process_string(vt, buf, bytes + offset);
         if (parsed < bytes + offset) {
-            memcpy(buf, buf + parsed, bytes - parsed);
-            offset = bytes - parsed;
+            memmove(buf, buf + parsed, bytes + offset - parsed);
+            offset = bytes + offset - parsed;
         }
     }
 
