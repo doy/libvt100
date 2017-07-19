@@ -1052,6 +1052,8 @@ void vt100_screen_cleanup(VT100Screen *vt)
 {
     int i;
 
+    vt100_screen_use_normal_buffer(vt);
+
     for (i = 0; i < vt->grid->row_count; ++i) {
         free(vt->grid->rows[i].cells);
     }
